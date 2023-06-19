@@ -6,14 +6,14 @@
 
 <aside
 	class={`sidebar ${!sidebarOpen ? 'contracted' : ''}`}
-	style={`${!sidebarOpen ? '--sidebar-width: 3rem' : ''}`}
+	style={`${!sidebarOpen ? '--sidebar-width: 4rem' : ''}`}
 >
 	<header>
 		<a href="/"><img src="https://placehold.co/250x125" alt="logo" /></a>
 	</header>
-	<nav>
-		<ul role="list" class="page-links">
-			<li>
+	<nav class="links-section">
+		<ul role="list" class="links">
+			<li class="link">
 				<a href="/">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +26,7 @@
 					<span> Home </span>
 				</a>
 			</li>
-			<li>
+			<li class="link">
 				<a href="/about">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@
 					<span> About </span>
 				</a>
 			</li>
-			<li>
+			<li class="link">
 				<a target="_blank" href="https://github.com/nub31/sveltekit_template">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -82,117 +82,64 @@
 </aside>
 
 <style>
+	/* Expanded styling */
 	.sidebar {
-		background-color: var(--clr-background-end);
-		padding: var(--spacing-8);
 		width: var(--sidebar-width);
-		flex-shrink: 0;
-		box-shadow: var(--shadow-md);
+		background-color: var(--clr-background-end);
+		padding: 0 var(--spacing-4) var(--spacing-4) var(--spacing-4);
 		position: relative;
-		z-index: 0;
+		z-index: 1;
+		transition: width 100ms ease-in-out;
 		display: flex;
 		flex-direction: column;
-
-		transition: width 100ms ease-in-out;
+		gap: var(--spacing-8);
 	}
 
-	.sidebar.contracted {
-		padding: var(--spacing-2);
-	}
-
-	.sidebar > header {
-		flex-shrink: 0;
-	}
-
-	.sidebar.contracted > header > a > img {
-		display: none;
-	}
-
-	.sidebar > nav {
+	.links-section {
 		flex: 1;
 		overflow: auto;
-		margin-top: var(--spacing-8);
 	}
 
-	.sidebar.contracted > nav {
-		margin-top: 0;
-	}
-
-	.page-links {
+	.links {
+		display: flex;
+		flex-direction: column;
 		padding: 0;
+		gap: var(--spacing-4);
 		margin: 0;
 	}
 
-	.page-links > li {
-		background-color: var(--clr-secondary-button);
+	.link > a {
+		display: flex;
+		align-items: center;
+		padding: var(--spacing-4);
 		border-radius: var(--rounded-4);
+		text-decoration: none;
+		color: var(--clr-text);
+		background-color: var(--clr-secondary-button);
 		transition: background-color 100ms ease-in-out;
 	}
 
-	.page-links > li:hover,
-	.page-links > li:focus-visible {
+	.link > a:hover,
+	.link > a:focus-visible {
 		background-color: var(--clr-secondary-button-hover);
 	}
 
-	.page-links > li:not(:first-child) {
-		margin-top: var(--spacing-4);
-	}
-
-	.page-links > li > a {
-		padding: var(--spacing-4);
-		color: var(--clr-text);
-		text-decoration: none;
-		display: flex;
-		align-items: center;
-	}
-
-	.page-links > li > a > svg {
+	.link > a > svg:first-of-type {
 		margin-right: var(--spacing-8);
+		flex-shrink: 0;
 	}
 
-	.sidebar.contracted .page-links > li {
-		background: none;
-		aspect-ratio: 1;
-		border-radius: var(--rounded-full);
-	}
-
-	.sidebar.contracted .page-links > li:hover,
-	.sidebar.contracted .page-links > li:focus-visible {
-		background: var(--clr-secondary-button-hover);
-	}
-
-	.sidebar.contracted .page-links > li > a::after {
-		display: none;
-	}
-
-	.sidebar.contracted .page-links > li > a > *:not(:first-child) {
-		display: none;
-	}
-
-	.sidebar.contracted .page-links > li > a > svg {
-		min-width: 100%;
-		min-height: 100%;
-	}
-
-	.contract-button-wrapper {
+	.link > a {
 		display: flex;
-		justify-content: start;
-		align-items: center;
-	}
-
-	.sidebar.contracted .contract-button-wrapper {
-		justify-content: center;
-		margin-bottom: var(--spacing-2);
 	}
 
 	.contract-button {
-		height: 100%;
-		aspect-ratio: 1;
-		background: none;
+		background-color: transparent;
 		border: none;
 		cursor: pointer;
-		transition: background-color 100ms ease-in-out;
+		padding: var(--spacing-4);
 		border-radius: var(--rounded-full);
+		transition: background-color 100ms ease-in-out;
 	}
 
 	.contract-button:hover,
@@ -200,20 +147,58 @@
 		background-color: var(--clr-secondary-button-hover);
 	}
 
+	/* Contracted Styling */
+	.sidebar.contracted > header {
+		display: none;
+	}
+
+	.sidebar.contracted .links {
+		align-items: center;
+		justify-content: center;
+	}
+
+	.sidebar.contracted .link > a {
+		background-color: transparent;
+		border-radius: var(--rounded-full);
+	}
+
+	.sidebar.contracted .link > a:hover,
+	.sidebar.contracted .link > a:focus-visible {
+		background-color: var(--clr-secondary-button-hover);
+	}
+
+	.sidebar.contracted .link > a > *:not(svg) {
+		display: none;
+	}
+
+	.sidebar.contracted .link > a > svg:first-of-type {
+		margin: 0;
+	}
+
+	.sidebar.contracted .link > a::after {
+		display: none;
+	}
+
+	.sidebar.contracted .contract-button-wrapper {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 	/* Rounded top left corner */
 	.sidebar::after {
-		--corner-size: 15px;
+		--_corner-size: 15px;
 
 		content: '';
-		width: var(--corner-size);
+		width: var(--_corner-size);
 		aspect-ratio: 1;
 		position: absolute;
 		right: 0;
 		top: 0;
 		transform: translate(100%);
 		border-top-left-radius: var(--rounded-full);
-		box-shadow: calc(var(--corner-size) / 5 * -1) calc(var(--corner-size) / 5 * -1) 0
-			calc(var(--corner-size) / 5) var(--clr-background-end);
+		box-shadow: calc(var(--_corner-size) / 5 * -1) calc(var(--_corner-size) / 5 * -1) 0
+			calc(var(--_corner-size) / 5) var(--clr-background-end);
 		filter: drop-shadow(var(--shadow-md));
 		z-index: -1;
 	}
