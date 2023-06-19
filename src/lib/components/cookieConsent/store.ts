@@ -3,19 +3,22 @@ import { browser } from '$app/environment'
 import type { Consent } from '../../types/Consent'
 
 function createCookieConsentEditor() {
-	let consent: Consent
+	const storedJson = browser ? localStorage.getItem('cookie_consent') || null : null
+	let storedConsent
 
-	const storedConsent = browser ? localStorage.getItem('cookie_consent') || null : null
+	try {
+		storedConsent = storedJson ? JSON.parse(storedJson) : null
+	} catch {
+		if (browser) localStorage.removeItem('cookie_consent')
+	}
 
-	if (storedConsent) consent = JSON.parse(storedConsent)
-	else
-		consent = {
-			functional: true,
-			tracking: false,
-			advertising: false,
-			marketing: false,
-			displayModal: true
-		}
+	const consent = storedConsent || {
+		functional: true,
+		tracking: false,
+		advertising: false,
+		marketing: false,
+		displayModal: true
+	}
 
 	const { subscribe, update } = writable(consent)
 
