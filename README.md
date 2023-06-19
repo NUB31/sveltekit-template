@@ -13,9 +13,9 @@
 <div align="center">
 <div style="width: 700px">
 
-|                                                                                |                                                                                 |
-| :----------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-| [![Product Name Screen Shot][dark-contracted-screenshot]](https://example.com) | [![Product Name Screen Shot][light-contracted-screenshot]](https://example.com) |
+|                          Dark                           |                          Light                           |
+| :-----------------------------------------------------: | :------------------------------------------------------: |
+| ![Product Name Screen Shot][dark-contracted-screenshot] | ![Product Name Screen Shot][light-contracted-screenshot] |
 
 </div>
 <h1 align="center">sveltekit_template</h1>
@@ -65,7 +65,7 @@ This just a basic sveltekit template for my future projects. Feel free to use it
 
 ### Built With
 
--   [![Svelte][Svelte.dev]][Svelte-url]
+[![Svelte][Svelte.dev]][Svelte-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -110,21 +110,21 @@ This is an example of how to list things you need to use the software and how to
 <div align="center">
 <div style="width: 700px">
 
-|                                                                                |                                                                                 |
-| :----------------------------------------------------------------------------: | :-----------------------------------------------------------------------------: |
-| [![Product Name Screen Shot][dark-contracted-screenshot]](https://example.com) | [![Product Name Screen Shot][light-contracted-screenshot]](https://example.com) |
+|                          Dark                           |                          Light                           |
+| :-----------------------------------------------------: | :------------------------------------------------------: |
+| ![Product Name Screen Shot][dark-contracted-screenshot] | ![Product Name Screen Shot][light-contracted-screenshot] |
 
 ### Built in retractable sidebar and user options menu
 
-|                                                                              |                                                                               |
-| :--------------------------------------------------------------------------: | :---------------------------------------------------------------------------: |
-| [![Product Name Screen Shot][dark-expanded-screenshot]](https://example.com) | [![Product Name Screen Shot][light-expanded-screenshot]](https://example.com) |
+|                         Dark                          |                         Light                          |
+| :---------------------------------------------------: | :----------------------------------------------------: |
+| ![Product Name Screen Shot][dark-expanded-screenshot] | ![Product Name Screen Shot][light-expanded-screenshot] |
 
 ### Built in cookie consent form
 
-|                                                                            |                                                                             |
-| :------------------------------------------------------------------------: | :-------------------------------------------------------------------------: |
-| [![Product Name Screen Shot][dark-cookie-screenshot]](https://example.com) | [![Product Name Screen Shot][light-cookie-screenshot]](https://example.com) |
+|                        Dark                         |                        Light                         |
+| :-------------------------------------------------: | :--------------------------------------------------: |
+| ![Product Name Screen Shot][dark-cookie-screenshot] | ![Product Name Screen Shot][light-cookie-screenshot] |
 
 </div>
 </div>
@@ -184,7 +184,7 @@ Project Link: [https://github.com/NUB31/sveltekit_template](https://github.com/N
 [issues-shield]: https://img.shields.io/github/issues/NUB31/sveltekit_template.svg?style=for-the-badge
 [issues-url]: https://github.com/NUB31/sveltekit_template/issues
 [license-shield]: https://img.shields.io/github/license/NUB31/sveltekit_template.svg?style=for-the-badge
-[license-url]: https://github.com/NUB31/sveltekit_template/blob/master/LICENSE
+[license-url]: https://github.com/NUB31/sveltekit_template/blob/main/LICENCE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/oliver-stene-744a96200
 [Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
