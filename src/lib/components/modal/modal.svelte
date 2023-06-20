@@ -13,11 +13,12 @@
 
 <style>
 	dialog {
+		background-color: var(--background-color, var(--clr-background-end));
+		border-radius: var(--border-radius, var(--rounded-8));
+		padding: var(--padding, var(--spacing-16));
+
+		box-shadow: var(--shadow-md);
 		width: min(100% - 3rem, 65ch);
 		border: none;
-		border-radius: var(--rounded-8);
-		box-shadow: var(--shadow-md);
-		background-color: var(--clr-background-end);
-		padding: var(--spacing-16);
 	}
 </style>
