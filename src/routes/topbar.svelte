@@ -8,9 +8,7 @@
 	let accountDialogOpen = false
 
 	async function logout() {
-		let res = await fetch('/api/v1/logout', {
-			credentials: 'include'
-		})
+		let res = await fetch('/api/v1/logout')
 
 		if (res.ok) {
 			accountDialogOpen = false
