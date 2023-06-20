@@ -1,10 +1,7 @@
-import { invalidate } from '$app/navigation'
-import { SECRET_JWT_SECRET } from '$env/static/private'
-import { db } from '$lib/database'
-import type { ApiResponse } from '$lib/types/ApiResponse'
+import type { ApiResponse } from '$lib/types'
 import { json, type RequestHandler } from '@sveltejs/kit'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import { generateJwt, db } from '$lib/util'
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const res: ApiResponse = {
@@ -49,12 +46,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		return json(res, { status: 401 })
 	}
 
-	user.password = '' // Hide password from jwt
-	const token = jwt.sign({ user: user }, SECRET_JWT_SECRET, {
-		expiresIn: '30d'
+	cookies.set('jwt', await generateJwt(user.id), {
+		path: '/'
 	})
-
-	cookies.set('jwt', token)
 
 	res.success = true
 	return json(res)

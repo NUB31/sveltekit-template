@@ -1,4 +1,4 @@
-import type { ApiResponse } from '$lib/types/ApiResponse'
+import type { ApiResponse } from '$lib/types'
 import { json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async ({ cookies }) => {
@@ -8,7 +8,9 @@ export const GET: RequestHandler = async ({ cookies }) => {
 		success: false
 	}
 
-	cookies.set('jwt', '')
+	cookies.set('jwt', '', {
+		path: '/'
+	})
 
 	res.success = true
 	return json(res)

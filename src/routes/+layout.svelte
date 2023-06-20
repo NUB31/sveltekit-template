@@ -4,8 +4,14 @@
 	import Topbar from './topbar.svelte'
 	import Sidebar from './sidebar.svelte'
 	import { CookieConsent } from '$lib/components'
+	import { onMount } from 'svelte'
+	import { goto } from '$app/navigation'
 
 	export let data
+
+	onMount(async () => {
+		if (data.user && !data.user.isVerified) await goto('/signup/verify')
+	})
 </script>
 
 <Topbar user={data.user} />

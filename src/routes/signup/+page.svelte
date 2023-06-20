@@ -2,6 +2,8 @@
 	import { goto, invalidateAll } from '$app/navigation'
 	import { Button } from '$lib/components'
 
+	export let data
+
 	let username = ''
 	let password = ''
 	let email = ''
@@ -11,38 +13,65 @@
 	let loading = false
 
 	async function signup() {
-		if (username.trim().length == 0 && password.trim().length == 0) return
-
 		loading = true
-		const res = await fetch('/api/v1/signup', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username: username,
-				password: password,
-				email: email,
-				phone: phone.trim().length >= 1 ? phone : null
+		errorMessage = null
+
+		try {
+			const createUserRes = await fetch('/api/v1/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					username: username,
+					password: password,
+					email: email,
+					phone: phone.trim().length >= 1 ? phone : null
+				})
 			})
-		})
 
-		loading = false
-
-		if (!res.ok) {
-			try {
-				let data = await res.json()
-				if (data.message) errorMessage = data.message
-			} catch (error) {
-				errorMessage = 'Something went really wrong here!'
+			if (!createUserRes.ok) {
+				try {
+					let data = await createUserRes.json()
+					if (data.message) throw new Error(data.message)
+					else {
+						throw new Error('Could not create your account')
+					}
+				} catch (error) {
+					throw error
+				}
 			}
-		} else {
+
 			await invalidateAll()
+
+			const sendVerificationRes = await fetch('/api/v1/sendVerification', {
+				headers: {
+					Authorization: `Bearer ${data.token}`
+				}
+			})
+
+			if (!sendVerificationRes.ok) {
+				try {
+					let data = await sendVerificationRes.json()
+					if (data.message) throw new Error(data.message)
+					else
+						throw new Error(
+							'Your account has been created, but your verification email failed to send'
+						)
+				} catch (error) {
+					throw error
+				}
+			}
+
 			await goto('/signup/verify')
+		} catch (error: unknown) {
+			let message = 'Something went really wrong here!'
+			if (error instanceof Error) message = error.message
+			errorMessage = message
+		} finally {
+			loading = false
 		}
 	}
-
-	$: loading && (errorMessage = null)
 </script>
 
 <form class="login-form" on:submit|preventDefault={signup}>

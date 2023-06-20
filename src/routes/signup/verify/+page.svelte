@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto, invalidateAll } from '$app/navigation'
 	import { Button } from '$lib/components'
 
 	export let data
@@ -9,11 +10,70 @@
 	let loading = false
 	let buttonDisabled = true
 
-	async function verify() {
-		loading = true
+	async function sendCode() {
+		buttonDisabled = true
+		try {
+			const res = await fetch('/api/v1/sendVerification', {
+				headers: {
+					Authorization: `Bearer ${data.token}`
+				}
+			})
+
+			if (!res.ok) {
+				try {
+					let data = await res.json()
+					if (data.message) throw new Error(data.message)
+					else throw new Error('Your verification email failed to send')
+				} catch (error) {
+					throw error
+				}
+			}
+		} catch (error: unknown) {
+			let message = 'Something went really wrong here!'
+			if (error instanceof Error) message = error.message
+			errorMessage = message
+		} finally {
+			buttonDisabled = false
+		}
 	}
 
-	$: loading && (errorMessage = null)
+	async function verify() {
+		loading = true
+		errorMessage = null
+
+		try {
+			const res = await fetch('/api/v1/verify', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${data.token}`
+				},
+				body: JSON.stringify({
+					code: code
+				})
+			})
+
+			if (!res.ok) {
+				try {
+					let data = await res.json()
+					if (data.message) throw new Error(data.message)
+					else throw new Error('Could not verify your code')
+				} catch (error) {
+					throw error
+				}
+			}
+
+			await invalidateAll()
+			await goto('/')
+		} catch (error: unknown) {
+			let message = 'Something went really wrong here!'
+			if (error instanceof Error) message = error.message
+			errorMessage = message
+		} finally {
+			loading = false
+		}
+	}
+
 	$: buttonDisabled = !(code.length === 6)
 </script>
 
@@ -41,7 +101,15 @@
 		/>
 	</div>
 	<div class="button-wrapper">
-		<Button disabled={loading} --width="100%" style="secondary">Send new code</Button>
+		<Button
+			on:click={sendCode}
+			disabled={loading}
+			--width="100%"
+			style="secondary"
+			type="button"
+		>
+			Send new code
+		</Button>
 		<Button disabled={buttonDisabled} {loading} --width="100%" style="primary">Verify</Button>
 	</div>
 </form>

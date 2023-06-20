@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store'
 import { browser } from '$app/environment'
-import type { Consent } from '../../types/Consent'
+import type { Consent } from '$lib/types'
 
 function createCookieConsentEditor() {
 	const storedJson = browser ? localStorage.getItem('cookie_consent') || null : null
