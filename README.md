@@ -169,6 +169,7 @@ Project Link: [https://github.com/NUB31/sveltekit_template](https://github.com/N
 
 ## Acknowledgments
 
+-   [This README Template](https://github.com/othneildrew/Best-README-Template)
 -   [Img Shields](https://shields.io/)
 -   [Choose an Open Source License](https://choosealicense.com/)
 -   [Open Source Icon Collection](https://icon-sets.iconify.design/)
