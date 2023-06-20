@@ -4,13 +4,15 @@
 	export let loading: boolean | null | undefined = undefined
 	export let style: 'primary' | 'secondary' | 'custom' = 'secondary'
 
-	$: loading && (disabled = true)
+	let actuallyDisabled = disabled
+
+	$: loading ? (actuallyDisabled = true) : (actuallyDisabled = disabled)
 </script>
 
 <button
 	on:click
 	{type}
-	{disabled}
+	disabled={actuallyDisabled}
 	style={`
 		${loading ? '--color: hsl(0, 0%, 0%, 0%);' : ''}
 		${

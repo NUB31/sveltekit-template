@@ -139,6 +139,12 @@ dialog[open] {
 	animation: fade 100ms ease-in-out normal;
 }
 
+label.required::before {
+	color: var(--clr-accent);
+	margin-right: var(--spacing-2);
+	content: '*';
+}
+
 @keyframes fade {
 	from {
 		opacity: 0;
