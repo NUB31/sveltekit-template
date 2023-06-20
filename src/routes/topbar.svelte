@@ -196,6 +196,6 @@
 
 	.button-group {
 		display: flex;
-		gap: var(--spacing-4);
+		gap: var(--spacing-8);
 	}
 </style>
