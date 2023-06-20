@@ -1,3 +1,4 @@
+import { invalidate } from '$app/navigation'
 import { SECRET_JWT_SECRET } from '$env/static/private'
 import { db } from '$lib/database'
 import type { ApiResponse } from '$lib/types/ApiResponse'

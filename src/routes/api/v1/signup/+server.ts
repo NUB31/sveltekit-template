@@ -49,5 +49,5 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	cookies.set('jwt', token)
 
 	res.success = true
-	return json(res)
+	return json(res, { status: 201 })
 }

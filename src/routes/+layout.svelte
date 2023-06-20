@@ -4,9 +4,11 @@
 	import Topbar from './topbar.svelte'
 	import Sidebar from './sidebar.svelte'
 	import { CookieConsent } from '$lib/components'
+
+	export let data
 </script>
 
-<Topbar />
+<Topbar user={data.user} />
 
 <div class="wrapper">
 	<Sidebar />

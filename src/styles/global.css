@@ -1,46 +1,22 @@
 @font-face {
-	font-family: 'Poppins';
+	font-family: 'Nunito';
 	font-style: normal;
-	font-weight: 400;
+	font-weight: all;
 	font-display: swap;
-	src: url('/fonts/poppins/Poppins-Regular.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'Poppins';
-	font-style: normal;
-	font-weight: 500;
-	font-display: swap;
-	src: url('/fonts/poppins/Poppins-Medium.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'Poppins';
-	font-style: normal;
-	font-weight: 700;
-	font-display: swap;
-	src: url('/fonts/poppins/Poppins-Bold.woff2') format('woff2');
+	src: url('/fonts/nunito/Nunito.woff2') format('woff2');
 }
 
 @font-face {
 	font-family: 'JetBrains Mono';
 	font-style: normal;
-	font-weight: 400;
+	font-weight: all;
 	font-display: swap;
-	src: url('/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2') format('woff2');
-}
-
-@font-face {
-	font-family: 'JetBrains Mono';
-	font-style: normal;
-	font-weight: 700;
-	font-display: swap;
-	src: url('/fonts/jetbrains-mono/JetBrainsMono-Bold.woff2') format('woff2');
+	src: url('/fonts/jetbrains-mono/JetBrainsMono.woff2') format('woff2');
 }
 
 :root {
 	/* Font */
-	--font-sans: 'Poppins', sans-serif;
+	--font-sans: 'Nunito', sans-serif;
 	--font-mono: 'JetBrains Mono', monospace;
 
 	--font-8: 0.8rem;
@@ -62,6 +38,7 @@
 	--spacing-2: 0.2rem;
 	--spacing-4: 0.4rem;
 	--spacing-8: 0.8rem;
+	--spacing-12: 1.2rem;
 	--spacing-16: 1.6rem;
 	--spacing-24: 2.4rem;
 	--spacing-32: 3.2rem;
@@ -79,7 +56,7 @@
 	--rounded-full: 9999px;
 
 	/* Layout specific */
-	--topbar-height: 3rem;
+	--topbar-height: 3.5rem;
 	--sidebar-width: 15rem;
 
 	/* Colors */
@@ -130,7 +107,7 @@ body {
 }
 
 a[href^='http']:after {
-	margin-left: var(--spacing-2);
+	margin-left: var(--spacing-4);
 	content: ''
 		url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="16" height="16" viewBox="0 0 24 24"%3E%3Cpath d="M14 3v2h3.59l-9.83 9.83l1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7Z"%2F%3E%3C%2Fsvg%3E');
 }
