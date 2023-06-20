@@ -42,12 +42,12 @@
 <style>
 	button {
 		background-color: var(--background-color);
+
 		color: var(--color, var(--clr-text));
 		padding: var(--padding, var(--spacing-4) var(--spacing-8));
-		border-radius: var(--font-weight, var(--rounded-4));
+		border-radius: var(--border-radius, var(--rounded-4));
 		font-weight: var(--font-weight, var(--weight-500));
-		font-size: var(--font-size, var(--font-10));
-
+		font-size: var(--font-size, inherit);
 		width: var(--width, auto);
 		height: var(--height, auto);
 
@@ -80,7 +80,7 @@
 	.spinner {
 		animation: spin 1s linear infinite;
 		display: block;
-		color: var(--clr-text);
+		color: var(--spinner-color, var(--clr-text));
 	}
 
 	@keyframes spin {
