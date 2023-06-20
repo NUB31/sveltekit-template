@@ -1,5 +1,6 @@
 <script lang="ts">
-	export let open = false
+	export let open: boolean
+
 	let modalEl: HTMLDialogElement
 
 	$: open && modalEl?.showModal()
