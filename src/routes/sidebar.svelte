@@ -86,7 +86,7 @@
 	.sidebar {
 		width: var(--sidebar-width);
 		background-color: var(--clr-background-end);
-		padding: 0 var(--spacing-4) var(--spacing-4) var(--spacing-4);
+		padding: 0 var(--spacing-8) var(--spacing-4) var(--spacing-8);
 		position: relative;
 		z-index: 1;
 		transition: width 100ms ease-in-out;
@@ -104,7 +104,7 @@
 		display: flex;
 		flex-direction: column;
 		padding: 0;
-		gap: var(--spacing-4);
+		gap: var(--spacing-8);
 		margin: 0;
 	}
 

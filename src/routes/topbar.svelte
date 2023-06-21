@@ -1,20 +1,29 @@
 <script lang="ts">
+	import { goto, invalidateAll } from '$app/navigation'
 	import { Button } from '$lib/components'
-	import { user } from '$lib/stores/index'
+	import type { User } from '@prisma/client'
+
+	export let user: User | null | undefined
 
 	let accountDialogOpen = false
 
-	function logout() {
-		throw new Error('Function not implemented.')
+	async function logout() {
+		let res = await fetch('/api/v1/logout')
+
+		if (res.ok) {
+			accountDialogOpen = false
+			await invalidateAll()
+			await goto('/login')
+		}
 	}
 </script>
 
 <header class="top">
-	{#if $user}
+	{#if user}
 		<div class="profile">
 			<button on:click={() => (accountDialogOpen = !accountDialogOpen)}>
-				{#if $user.profilePicture}
-					<img class="avatar" src={$user.profilePicture} alt="avatar" />
+				{#if user.profilePicture}
+					<img class="avatar" src={user.profilePicture} alt="avatar" />
 				{:else}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -81,8 +90,15 @@
 		</div>
 	{:else}
 		<div class="button-group">
-			<a href="/signup"><Button>Sign Up</Button></a>
-			<a href="/login"><Button style="primary">Log In</Button></a>
+			<a href="/signup">
+				<Button
+					style="custom"
+					--background-color-hover="hsl(0, 0%, 18%)"
+					--background-color="hsl(0, 0%, 20%)"
+					>Sign up
+				</Button>
+			</a>
+			<a href="/login"><Button style="primary">Log in</Button></a>
 		</div>
 	{/if}
 </header>
@@ -91,7 +107,8 @@
 	.top {
 		display: flex;
 		height: var(--topbar-height);
-		padding-inline: var(--spacing-8);
+		padding: var(--spacing-2) var(--spacing-8);
+
 		align-items: center;
 		justify-content: end;
 		box-shadow: var(--shadow-md);

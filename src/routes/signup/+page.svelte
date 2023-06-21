@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
+	import { goto, invalidateAll } from '$app/navigation'
 	import { Button } from '$lib/components'
+
+	export let data
 
 	let username = ''
 	let password = ''
@@ -10,42 +12,71 @@
 	let errorMessage: string | null = null
 	let loading = false
 
-	async function login() {
-		if (username.trim().length == 0 && password.trim().length == 0) return
-
+	async function signup() {
 		loading = true
-		const res = await fetch('/api/v1/signup', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username: username,
-				password: password,
-				email: email,
-				phone: phone.trim().length >= 1 ? phone : null
+		errorMessage = null
+
+		try {
+			const createUserRes = await fetch('/api/v1/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					username: username,
+					password: password,
+					email: email,
+					phone: phone.trim().length >= 1 ? phone : null
+				})
 			})
-		})
 
-		loading = false
-
-		if (!res.ok) {
-			try {
-				let data = await res.json()
-				if (data.message) errorMessage = data.message
-			} catch (error) {
-				errorMessage = 'Something went really wrong here!'
+			if (!createUserRes.ok) {
+				try {
+					let data = await createUserRes.json()
+					if (data.message) throw new Error(data.message)
+					else {
+						throw new Error('Could not create your account')
+					}
+				} catch (error) {
+					throw error
+				}
 			}
-		} else {
-			goto('/')
+
+			await invalidateAll()
+
+			const sendVerificationRes = await fetch('/api/v1/sendVerification', {
+				headers: {
+					Authorization: `Bearer ${data.token}`
+				}
+			})
+
+			if (!sendVerificationRes.ok) {
+				try {
+					let data = await sendVerificationRes.json()
+					if (data.message) throw new Error(data.message)
+					else
+						throw new Error(
+							'Your account has been created, but your verification email failed to send'
+						)
+				} catch (error) {
+					throw error
+				}
+			}
+
+			await goto('/signup/verify')
+		} catch (error: unknown) {
+			let message = 'Something went really wrong here!'
+			if (error instanceof Error) message = error.message
+			errorMessage = message
+		} finally {
+			loading = false
 		}
 	}
-
-	$: loading && (errorMessage = null)
 </script>
 
-<form class="login-form" on:submit|preventDefault={login}>
-	<caption>Sign Up</caption>
+<form class="login-form" on:submit|preventDefault={signup}>
+	<caption>Sign up</caption>
+	<hr />
 	{#if errorMessage}
 		<div class="error-message">
 			{errorMessage}
@@ -56,7 +87,7 @@
 		<input
 			bind:value={username}
 			type="text"
-			placeholder="username"
+			placeholder="Username"
 			name="username"
 			id="username"
 			required
@@ -67,7 +98,7 @@
 		<input
 			bind:value={password}
 			type="password"
-			placeholder="password"
+			placeholder="Password"
 			name="password"
 			id="password"
 			required
@@ -78,17 +109,19 @@
 		<input
 			bind:value={email}
 			type="email"
-			placeholder="email"
+			placeholder="Email"
 			name="email"
 			id="email"
 			required
 		/>
 	</div>
 	<div class="form-group">
-		<label for="phone">Phone Number</label>
-		<input bind:value={phone} type="tel" placeholder="phone number" name="phone" id="phone" />
+		<label for="phone">Phone number</label>
+		<input bind:value={phone} type="tel" placeholder="Phone number" name="phone" id="phone" />
 	</div>
-	<Button {loading} style="primary">Log In</Button>
+	<div class="button-wrapper">
+		<Button {loading} --width="100%" style="primary">Next</Button>
+	</div>
 </form>
 
 <style>
@@ -97,13 +130,21 @@
 		flex-direction: column;
 		width: min(100%, 55ch);
 		margin-inline: auto;
-		gap: var(--spacing-8);
 	}
 
 	.login-form > caption {
 		text-align: left;
 		font-weight: var(--weight-700);
 		font-size: var(--font-20);
+	}
+
+	.login-form > hr {
+		width: 50%;
+		margin-right: 100%;
+		height: 3px;
+		background-color: var(--clr-accent);
+		border: none;
+		border-radius: var(--rounded-full);
 	}
 
 	.error-message {
@@ -115,7 +156,15 @@
 	.form-group {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-2);
+		gap: var(--spacing-4);
+	}
+
+	.form-group:not(:first-of-type) {
+		margin-top: var(--spacing-16);
+	}
+
+	.form-group:first-of-type {
+		margin-top: var(--spacing-16);
 	}
 
 	input[type='text'],
@@ -133,5 +182,9 @@
 	input[type='tel']:focus,
 	input[type='password']:focus {
 		outline: 2px solid var(--clr-accent);
+	}
+
+	.button-wrapper {
+		margin-top: var(--spacing-16);
 	}
 </style>

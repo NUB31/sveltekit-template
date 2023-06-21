@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
+	import { goto, invalidateAll } from '$app/navigation'
 	import { Button } from '$lib/components'
+
+	export let data
 
 	let username = ''
 	let password = ''
@@ -33,7 +35,9 @@
 				errorMessage = 'Something went really wrong here!'
 			}
 		} else {
-			goto('/')
+			await invalidateAll()
+			if (data?.user?.isVerified === false) goto('/signup/verify')
+			else await goto('/')
 		}
 	}
 
@@ -41,35 +45,38 @@
 </script>
 
 <form class="login-form" on:submit|preventDefault={login}>
-	<caption>Log In</caption>
+	<caption>Log in</caption>
+	<hr />
 	{#if errorMessage}
 		<div class="error-message">
 			{errorMessage}
 		</div>
 	{/if}
 	<div class="form-group">
-		<label for="username">Username</label>
+		<label class="required" for="username">Username</label>
 		<input
 			bind:value={username}
 			type="text"
-			placeholder="username"
+			placeholder="Username"
 			name="username"
 			id="username"
 			required
 		/>
 	</div>
 	<div class="form-group">
-		<label for="password">Password</label>
+		<label class="required" for="password">Password</label>
 		<input
 			bind:value={password}
 			type="password"
-			placeholder="password"
+			placeholder="Password"
 			name="password"
 			id="password"
 			required
 		/>
 	</div>
-	<Button {loading} style="primary">Log In</Button>
+	<div class="button-wrapper">
+		<Button {loading} --width="100%" style="primary">Log in</Button>
+	</div>
 </form>
 
 <style>
@@ -78,13 +85,21 @@
 		flex-direction: column;
 		width: min(100%, 55ch);
 		margin-inline: auto;
-		gap: var(--spacing-8);
 	}
 
 	.login-form > caption {
 		text-align: left;
 		font-weight: var(--weight-700);
 		font-size: var(--font-20);
+	}
+
+	.login-form > hr {
+		width: 50%;
+		margin-right: 100%;
+		height: 3px;
+		background-color: var(--clr-accent);
+		border: none;
+		border-radius: var(--rounded-full);
 	}
 
 	.error-message {
@@ -96,7 +111,15 @@
 	.form-group {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-2);
+		gap: var(--spacing-4);
+	}
+
+	.form-group:not(:first-of-type) {
+		margin-top: var(--spacing-16);
+	}
+
+	.form-group:first-of-type {
+		margin-top: var(--spacing-16);
 	}
 
 	input[type='text'],
@@ -110,5 +133,9 @@
 	input[type='text']:focus,
 	input[type='password']:focus {
 		outline: 2px solid var(--clr-accent);
+	}
+
+	.button-wrapper {
+		margin-top: var(--spacing-16);
 	}
 </style>
