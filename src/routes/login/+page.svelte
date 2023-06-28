@@ -106,6 +106,7 @@
 		background-color: var(--clr-accent);
 		padding: var(--spacing-4);
 		border-radius: var(--rounded-4);
+		margin-top: var(--spacing-12);
 	}
 
 	.form-group {
