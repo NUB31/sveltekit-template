@@ -74,11 +74,11 @@
 	}
 </script>
 
-<form class="login-form" on:submit|preventDefault={signup}>
+<form class="centered" on:submit|preventDefault={signup}>
 	<caption>Sign up</caption>
 	<hr />
 	{#if errorMessage}
-		<div class="error-message">
+		<div class="error-message" style="margin-top: var(--spacing-12);">
 			{errorMessage}
 		</div>
 	{/if}
@@ -119,73 +119,5 @@
 		<label for="phone">Phone number</label>
 		<input bind:value={phone} type="tel" placeholder="Phone number" name="phone" id="phone" />
 	</div>
-	<div class="button-wrapper">
-		<Button {loading} --width="100%" style="primary">Next</Button>
-	</div>
+	<Button {loading} --margin-top="var(--spacing-16)" style="primary">Next</Button>
 </form>
-
-<style>
-	.login-form {
-		display: flex;
-		flex-direction: column;
-		width: min(100%, 55ch);
-		margin-inline: auto;
-	}
-
-	.login-form > caption {
-		text-align: left;
-		font-weight: var(--weight-700);
-		font-size: var(--font-20);
-	}
-
-	.login-form > hr {
-		width: 50%;
-		margin-right: 100%;
-		height: 3px;
-		background-color: var(--clr-accent);
-		border: none;
-		border-radius: var(--rounded-full);
-	}
-
-	.error-message {
-		background-color: var(--clr-accent);
-		padding: var(--spacing-4);
-		border-radius: var(--rounded-4);
-		margin-top: var(--spacing-12);
-	}
-
-	.form-group {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-4);
-	}
-
-	.form-group:not(:first-of-type) {
-		margin-top: var(--spacing-16);
-	}
-
-	.form-group:first-of-type {
-		margin-top: var(--spacing-16);
-	}
-
-	input[type='text'],
-	input[type='email'],
-	input[type='tel'],
-	input[type='password'] {
-		padding: var(--spacing-4) var(--spacing-8);
-		border-radius: var(--rounded-8);
-		background-color: var(--clr-secondary-button);
-		border: none;
-	}
-
-	input[type='text']:focus,
-	input[type='email']:focus,
-	input[type='tel']:focus,
-	input[type='password']:focus {
-		outline: 2px solid var(--clr-accent);
-	}
-
-	.button-wrapper {
-		margin-top: var(--spacing-16);
-	}
-</style>

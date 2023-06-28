@@ -53,6 +53,9 @@
 		width: var(--width, auto);
 		height: var(--height, auto);
 
+		margin-top: var(--margin-top, 0);
+		margin-bottom: var(--margin-bottom, 0);
+
 		border: none;
 		transition: all 100ms ease-in-out;
 		position: relative;

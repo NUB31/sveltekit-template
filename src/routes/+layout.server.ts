@@ -1,6 +1,5 @@
 import type { User } from '@prisma/client'
 import type { LayoutServerLoad } from './$types'
-import { goto } from '$app/navigation'
 
 export const load: LayoutServerLoad = async ({ fetch, cookies }) => {
 	let user: User | null = null
