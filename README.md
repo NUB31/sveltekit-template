@@ -65,7 +65,9 @@ This just a basic sveltekit template for my future projects. Feel free to use it
 
 ### Built With
 
-[![Svelte][Svelte.dev]][Svelte-url]
+[![Svelte][svelte-shield]][svelte-url]
+[![Prisma][prisma-shield]][prisma-url]
+[![Sqlite][sqlite-shield]][sqlite-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -93,10 +95,18 @@ This is an example of how to list things you need to use the software and how to
      git clone https://github.com/NUB31/sveltekit_template.git
     ```
 
-2. Install NPM packages
+2. Rename .env.example to .env and fill in values
+
+3. Install NPM packages
 
     ```bash
     npm install
+    ```
+
+4. Initialize database
+
+    ```bash
+    npx prisma db push
     ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -188,11 +198,15 @@ Project Link: [https://github.com/NUB31/sveltekit_template](https://github.com/N
 [license-url]: https://github.com/NUB31/sveltekit_template/blob/main/LICENCE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/oliver-stene-744a96200
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
 [dark-contracted-screenshot]: /assets/dark-contracted.png
 [dark-expanded-screenshot]: /assets/dark-expanded.png
 [dark-cookie-screenshot]: /assets/dark-cookie.png
 [light-contracted-screenshot]: /assets/light-contracted.png
 [light-expanded-screenshot]: /assets/light-expanded.png
 [light-cookie-screenshot]: /assets/light-cookie.png
+[svelte-shield]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
+[svelte-url]: https://svelte.dev/
+[prisma-shield]: https://img.shields.io/badge/Prisma-0C344B?style=for-the-badge&logo=Prisma&logoColor=FFFFFF
+[prisma-url]: https://www.prisma.io/
+[sqlite-shield]: https://img.shields.io/badge/Sqlite-369DDA?style=for-the-badge&logo=Sqlite&logoColor=FFFFFF
+[sqlite-url]: https://www.sqlite.org/
