@@ -19,8 +19,6 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const data = Object.fromEntries(await request.formData())
 
-		console.log(data)
-
 		const relativeFilePath = path.join(
 			'upload',
 			`${crypto.randomUUID()}.${(data.file as File).type.split('/')[1]}`
