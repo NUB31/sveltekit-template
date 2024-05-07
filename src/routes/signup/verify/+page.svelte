@@ -2,10 +2,10 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/button/Button.svelte';
 	import type { ErrorOrT } from '$lib/types/ErrorOrT.js';
-	import { userStore } from '$lib/store/userStore';
 	import { Routes } from '$lib/global/routes';
 	import { authStateChanged, sendVerification } from '$lib/util/auth';
 	import type { User } from '@prisma/client';
+	import AuthorizedView from '$lib/components/authorizedView/AuthorizedView.svelte';
 
 	let code = '';
 
@@ -56,42 +56,46 @@
 	$: buttonDisabled = !(code.length === 6);
 </script>
 
-<form class="login-form" on:submit|preventDefault={verify}>
-	<caption>Verify email address</caption>
-	<hr />
-	<p>
-		We have sent a verification code to '{$userStore?.email}'.
-	</p>
-	{#if errorMessage}
-		<div class="error-message">
-			{errorMessage}
+<AuthorizedView showUnauthorizedMessage>
+	<form slot="authorized" class="login-form" on:submit|preventDefault={verify} let:user>
+		<caption>Verify email address</caption>
+		<hr />
+		<p>
+			We have sent a verification code to '{user.email}'.
+		</p>
+		{#if errorMessage}
+			<div class="error-message">
+				{errorMessage}
+			</div>
+		{/if}
+		<div class="form-group">
+			<label for="phone">Verification code</label>
+			<input
+				bind:value={code}
+				maxlength="6"
+				type="text"
+				placeholder="xxxxxx"
+				name="code"
+				id="code"
+				required
+			/>
 		</div>
-	{/if}
-	<div class="form-group">
-		<label for="phone">Verification code</label>
-		<input
-			bind:value={code}
-			maxlength="6"
-			type="text"
-			placeholder="xxxxxx"
-			name="code"
-			id="code"
-			required
-		/>
-	</div>
-	<div class="button-wrapper">
-		<Button
-			on:click={invokeSendVerificationCode}
-			disabled={loading}
-			--width="100%"
-			style="secondary"
-			type="button"
-		>
-			Send new code
-		</Button>
-		<Button disabled={buttonDisabled} {loading} --width="100%" style="primary">Verify</Button>
-	</div>
-</form>
+		<div class="button-wrapper">
+			<Button
+				on:click={invokeSendVerificationCode}
+				disabled={loading}
+				--width="100%"
+				style="secondary"
+				type="button"
+			>
+				Send new code
+			</Button>
+			<Button disabled={buttonDisabled} {loading} --width="100%" style="primary"
+				>Verify</Button
+			>
+		</div>
+	</form>
+</AuthorizedView>
 
 <style>
 	.login-form {
