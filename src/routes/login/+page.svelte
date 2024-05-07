@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation'
-	import { Button } from '$lib/components'
+	import { goto, invalidateAll } from '$app/navigation';
+	import Button from '$lib/components/button/button.svelte';
 
-	export let data
+	export let data;
 
-	let username = ''
-	let password = ''
+	let username = '';
+	let password = '';
 
-	let errorMessage: string | null = null
-	let loading = false
+	let errorMessage: string | null = null;
+	let loading = false;
 
 	async function login() {
-		if (username.trim().length == 0 && password.trim().length == 0) return
+		if (username.trim().length == 0 && password.trim().length == 0) return;
 
-		loading = true
+		loading = true;
 		const res = await fetch('/api/v1/login', {
 			method: 'POST',
 			headers: {
@@ -23,25 +23,25 @@
 				username: username,
 				password: password
 			})
-		})
+		});
 
-		loading = false
+		loading = false;
 
 		if (!res.ok) {
 			try {
-				let data = await res.json()
-				if (data.message) errorMessage = data.message
+				let data = await res.json();
+				if (data.message) errorMessage = data.message;
 			} catch (error) {
-				errorMessage = 'Something went really wrong here!'
+				errorMessage = 'Something went really wrong here!';
 			}
 		} else {
-			await invalidateAll()
-			if (data?.user?.isVerified === false) goto('/signup/verify')
-			else await goto('/')
+			await invalidateAll();
+			if (data?.user?.isVerified === false) goto('/signup/verify');
+			else await goto('/');
 		}
 	}
 
-	$: loading && (errorMessage = null)
+	$: loading && (errorMessage = null);
 </script>
 
 <form class="centered" on:submit|preventDefault={login}>

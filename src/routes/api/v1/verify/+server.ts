@@ -1,41 +1,41 @@
-import type { ApiResponse } from '$lib/types'
-import { db, authorize, generateJwt } from '$lib/util'
-import { json, type RequestHandler } from '@sveltejs/kit'
+import type { ApiResponse } from '$lib/types';
+import { db, authorize, generateJwt } from '$lib/util';
+import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const res: ApiResponse = {
 		data: null,
 		message: null,
 		success: false
-	}
+	};
 
 	return authorize(request, async (err, user) => {
 		if (err) {
-			res.message = err
-			return json(res, { status: 403 })
+			res.message = err;
+			return json(res, { status: 403 });
 		}
 
 		if (!request.body) {
-			res.message = 'Request does not have a body'
-			return json(res, { status: 422 })
+			res.message = 'Request does not have a body';
+			return json(res, { status: 422 });
 		}
 
-		let body
+		let body;
 		try {
-			body = await request.json()
+			body = await request.json();
 		} catch (error) {
-			res.message = 'Could not parse JSON'
-			return json(res, { status: 400 })
+			res.message = 'Could not parse JSON';
+			return json(res, { status: 400 });
 		}
 
 		if (!body.code) {
-			res.message = 'Body must contain a verification code'
-			return json(res, { status: 422 })
+			res.message = 'Body must contain a verification code';
+			return json(res, { status: 422 });
 		}
 
 		if (isNaN(Number(body.code))) {
-			res.message = 'Code must be of type: number'
-			return json(res, { status: 422 })
+			res.message = 'Code must be of type: number';
+			return json(res, { status: 422 });
 		}
 
 		try {
@@ -49,10 +49,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 						}
 					}
 				}
-			})
+			});
 		} catch (error) {
-			res.message = 'Code is invalid or expired'
-			return json(res, { status: 422 })
+			res.message = 'Code is invalid or expired';
+			return json(res, { status: 422 });
 		}
 
 		try {
@@ -63,17 +63,17 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				where: {
 					username: user.username
 				}
-			})
+			});
 		} catch (error) {
-			res.message = 'There was an error updating the database'
-			return json(res, { status: 500 })
+			res.message = 'There was an error updating the database';
+			return json(res, { status: 500 });
 		}
 
 		cookies.set('jwt', await generateJwt(user.id), {
 			path: '/'
-		})
+		});
 
-		res.success = true
-		return json(res, { status: 200 })
-	})
-}
+		res.success = true;
+		return json(res, { status: 200 });
+	});
+};

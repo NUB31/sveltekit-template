@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { browser } from '$app/environment'
+	import { browser } from '$app/environment';
 
-	let sidebarOpen = browser ? document.body.clientWidth > 850 : false
+	let sidebarOpen = browser ? document.body.clientWidth > 850 : false;
 </script>
 
 <aside

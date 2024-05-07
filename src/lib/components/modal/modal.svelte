@@ -1,10 +1,10 @@
 <script lang="ts">
-	export let open: boolean
+	export let open: boolean;
 
-	let modalEl: HTMLDialogElement
+	let modalEl: HTMLDialogElement;
 
-	$: open && modalEl?.showModal()
-	$: !open && modalEl?.close()
+	$: open && modalEl?.showModal();
+	$: !open && modalEl?.close();
 </script>
 
 <dialog on:cancel bind:this={modalEl}>

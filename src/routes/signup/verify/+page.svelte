@@ -1,45 +1,45 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation'
-	import { Button } from '$lib/components'
+	import { goto, invalidateAll } from '$app/navigation';
+	import Button from '$lib/components/button/button.svelte';
 
-	export let data
+	export let data;
 
-	let code = ''
+	let code = '';
 
-	let errorMessage: string | null = null
-	let loading = false
-	let buttonDisabled = true
+	let errorMessage: string | null = null;
+	let loading = false;
+	let buttonDisabled = true;
 
 	async function sendCode() {
-		buttonDisabled = true
+		buttonDisabled = true;
 		try {
 			const res = await fetch('/api/v1/sendVerification', {
 				headers: {
 					Authorization: `Bearer ${data.token}`
 				}
-			})
+			});
 
 			if (!res.ok) {
 				try {
-					let data = await res.json()
-					if (data.message) throw new Error(data.message)
-					else throw new Error('Your verification email failed to send')
+					let data = await res.json();
+					if (data.message) throw new Error(data.message);
+					else throw new Error('Your verification email failed to send');
 				} catch (error) {
-					throw error
+					throw error;
 				}
 			}
 		} catch (error: unknown) {
-			let message = 'Something went really wrong here!'
-			if (error instanceof Error) message = error.message
-			errorMessage = message
+			let message = 'Something went really wrong here!';
+			if (error instanceof Error) message = error.message;
+			errorMessage = message;
 		} finally {
-			buttonDisabled = false
+			buttonDisabled = false;
 		}
 	}
 
 	async function verify() {
-		loading = true
-		errorMessage = null
+		loading = true;
+		errorMessage = null;
 
 		try {
 			const res = await fetch('/api/v1/verify', {
@@ -51,30 +51,30 @@
 				body: JSON.stringify({
 					code: code
 				})
-			})
+			});
 
 			if (!res.ok) {
 				try {
-					let data = await res.json()
-					if (data.message) throw new Error(data.message)
-					else throw new Error('Could not verify your code')
+					let data = await res.json();
+					if (data.message) throw new Error(data.message);
+					else throw new Error('Could not verify your code');
 				} catch (error) {
-					throw error
+					throw error;
 				}
 			}
 
-			await invalidateAll()
-			await goto('/')
+			await invalidateAll();
+			await goto('/');
 		} catch (error: unknown) {
-			let message = 'Something went really wrong here!'
-			if (error instanceof Error) message = error.message
-			errorMessage = message
+			let message = 'Something went really wrong here!';
+			if (error instanceof Error) message = error.message;
+			errorMessage = message;
 		} finally {
-			loading = false
+			loading = false;
 		}
 	}
 
-	$: buttonDisabled = !(code.length === 6)
+	$: buttonDisabled = !(code.length === 6);
 </script>
 
 <form class="login-form" on:submit|preventDefault={verify}>

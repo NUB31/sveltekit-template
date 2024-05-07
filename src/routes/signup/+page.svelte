@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation'
-	import { Button } from '$lib/components'
+	import { goto, invalidateAll } from '$app/navigation';
+	import Button from '$lib/components/button/button.svelte';
 
-	export let data
+	export let data;
 
-	let username = ''
-	let password = ''
-	let email = ''
-	let phone = ''
+	let username = '';
+	let password = '';
+	let email = '';
+	let phone = '';
 
-	let errorMessage: string | null = null
-	let loading = false
+	let errorMessage: string | null = null;
+	let loading = false;
 
 	async function signup() {
-		loading = true
-		errorMessage = null
+		loading = true;
+		errorMessage = null;
 
 		try {
 			const createUserRes = await fetch('/api/v1/signup', {
@@ -28,48 +28,48 @@
 					email: email,
 					phone: phone.trim().length >= 1 ? phone : null
 				})
-			})
+			});
 
 			if (!createUserRes.ok) {
 				try {
-					let data = await createUserRes.json()
-					if (data.message) throw new Error(data.message)
+					let data = await createUserRes.json();
+					if (data.message) throw new Error(data.message);
 					else {
-						throw new Error('Could not create your account')
+						throw new Error('Could not create your account');
 					}
 				} catch (error) {
-					throw error
+					throw error;
 				}
 			}
 
-			await invalidateAll()
+			await invalidateAll();
 
 			const sendVerificationRes = await fetch('/api/v1/sendVerification', {
 				headers: {
 					Authorization: `Bearer ${data.token}`
 				}
-			})
+			});
 
 			if (!sendVerificationRes.ok) {
 				try {
-					let data = await sendVerificationRes.json()
-					if (data.message) throw new Error(data.message)
+					let data = await sendVerificationRes.json();
+					if (data.message) throw new Error(data.message);
 					else
 						throw new Error(
 							'Your account has been created, but your verification email failed to send'
-						)
+						);
 				} catch (error) {
-					throw error
+					throw error;
 				}
 			}
 
-			await goto('/signup/verify')
+			await goto('/signup/verify');
 		} catch (error: unknown) {
-			let message = 'Something went really wrong here!'
-			if (error instanceof Error) message = error.message
-			errorMessage = message
+			let message = 'Something went really wrong here!';
+			if (error instanceof Error) message = error.message;
+			errorMessage = message;
 		} finally {
-			loading = false
+			loading = false;
 		}
 	}
 </script>

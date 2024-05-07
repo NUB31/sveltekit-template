@@ -1,75 +1,33 @@
 <script lang="ts">
-	import { cookieConsent } from './store'
-	import { Button, Modal } from '..'
+	import Button from '../button/button.svelte';
+	import Modal from '../modal/modal.svelte';
+	import { cookieConsent } from './store';
 </script>
 
 <Modal
 	on:cancel={(e) => {
-		e.preventDefault()
+		e.preventDefault();
 	}}
-	open={$cookieConsent.displayModal}
+	open={!$cookieConsent.dismissed}
 >
-	<h2>Do you consent to using cookies?</h2>
+	<h2>This site uses cookies</h2>
 	<p class="description">
 		This site uses some purely functional cookies for functionality such as dark/light theme,
 		language and saving your cookie consent choice.
 	</p>
-	<p class="description">
-		The site also uses some non-functional cookies for functionality such as analytics and 3rd
-		party content (google maps, payments etc.)
-	</p>
-	<div class="selection-group">
-		<span class="checkbox-group">
-			<label for="tracking">Allow tracking</label>
-			<input
-				bind:checked={$cookieConsent.tracking}
-				type="checkbox"
-				name="tracking"
-				id="tracking"
-			/>
-		</span>
-		<span class="checkbox-group">
-			<label for="marketing">Allow marketing</label>
-			<input
-				bind:checked={$cookieConsent.marketing}
-				type="checkbox"
-				name="marketing"
-				id="marketing"
-			/>
-		</span>
-		<span class="checkbox-group">
-			<label for="advertising">Allow advertising</label>
-			<input
-				bind:checked={$cookieConsent.advertising}
-				type="checkbox"
-				name="advertising"
-				id="advertising"
-			/>
-		</span>
-	</div>
 	<div class="button-group">
 		<Button
 			on:click={() => {
-				$cookieConsent = {
-					functional: true,
-					advertising: false,
-					marketing: false,
-					tracking: false,
-					displayModal: false
-				}
+				$cookieConsent.dismissed = true;
 			}}
-			style="secondary">Reject All</Button
+			style="primary"
 		>
-		<Button
-			on:click={() => {
-				$cookieConsent.displayModal = false
-			}}
-			style="primary">Accept Selected</Button
-		>
+			Acknowledge
+		</Button>
 	</div>
 </Modal>
 
-<button on:click={() => ($cookieConsent.displayModal = true)} class="cookie-button">
+<button on:click={() => ($cookieConsent.dismissed = false)} class="cookie-button">
 	<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
 		<path
 			fill="currentColor"
@@ -81,14 +39,6 @@
 <style>
 	.description:not(:first-of-type) {
 		margin-top: var(--spacing-4);
-	}
-
-	.selection-group {
-		margin-top: var(--spacing-16);
-		display: flex;
-		justify-content: space-evenly;
-		gap: var(--spacing-8);
-		flex-wrap: wrap;
 	}
 
 	.button-group {

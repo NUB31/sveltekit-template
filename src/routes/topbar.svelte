@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation'
-	import { Button } from '$lib/components'
-	import type { User } from '@prisma/client'
+	import { goto, invalidateAll } from '$app/navigation';
+	import Button from '$lib/components/button/button.svelte';
+	import type { User } from '@prisma/client';
 
-	export let user: User | null | undefined
+	export let user: User | null | undefined;
 
-	let accountDialogOpen = false
+	let accountDialogOpen = false;
 
 	async function logout() {
-		let res = await fetch('/api/v1/logout')
+		let res = await fetch('/api/v1/logout');
 
 		if (res.ok) {
-			accountDialogOpen = false
-			await invalidateAll()
-			await goto('/login')
+			accountDialogOpen = false;
+			await invalidateAll();
+			await goto('/login');
 		}
 	}
 </script>

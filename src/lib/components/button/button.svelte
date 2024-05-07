@@ -1,12 +1,12 @@
 <script lang="ts">
-	export let type: 'button' | 'submit' | 'reset' | null | undefined = undefined
-	export let disabled: boolean | null | undefined = undefined
-	export let loading: boolean | null | undefined = undefined
-	export let style: 'primary' | 'secondary' | 'custom' = 'secondary'
+	export let type: 'button' | 'submit' | 'reset' | null | undefined = undefined;
+	export let disabled: boolean | null | undefined = undefined;
+	export let loading: boolean | null | undefined = undefined;
+	export let style: 'primary' | 'secondary' | 'custom' = 'secondary';
 
-	let actuallyDisabled = disabled
+	let actuallyDisabled = disabled;
 
-	$: loading ? (actuallyDisabled = true) : (actuallyDisabled = disabled)
+	$: loading ? (actuallyDisabled = true) : (actuallyDisabled = disabled);
 </script>
 
 <button

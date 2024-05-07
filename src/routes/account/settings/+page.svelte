@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation'
-	import { Button } from '$lib/components/index.js'
+	import { invalidateAll } from '$app/navigation';
+	import Button from '$lib/components/button/button.svelte';
 
-	export let data
+	export let data;
 
-	let username = data.user?.username || ''
-	let password = ''
-	let profilePicture = data.user?.profilePicture || ''
-	let phone = data.user?.phone || ''
+	let username = data.user?.username || '';
+	let password = '';
+	let profilePicture = data.user?.profilePicture || '';
+	let phone = data.user?.phone || '';
 
-	let files: FileList
+	let files: FileList;
 
-	let errorMessage: string | null = null
-	let userUpdateLoading = false
-	let fileUploadLoading = false
+	let errorMessage: string | null = null;
+	let userUpdateLoading = false;
+	let fileUploadLoading = false;
 
 	async function updateAccountSettings() {
-		errorMessage = null
-		userUpdateLoading = true
+		errorMessage = null;
+		userUpdateLoading = true;
 
 		const res = await fetch('/api/v1/user/me', {
 			method: 'PATCH',
@@ -32,34 +32,34 @@
 					profilePicture.trim() !== data.user?.profilePicture ? profilePicture : null,
 				phone: phone.trim() !== data.user?.phone ? phone : null
 			})
-		})
+		});
 
-		userUpdateLoading = false
+		userUpdateLoading = false;
 
 		if (!res.ok) {
 			try {
-				let data = await res.json()
-				if (data.message) errorMessage = data.message
+				let data = await res.json();
+				if (data.message) errorMessage = data.message;
 			} catch (error) {
-				errorMessage = 'Something went really wrong here!'
+				errorMessage = 'Something went really wrong here!';
 			}
 		} else {
-			await invalidateAll()
+			await invalidateAll();
 		}
 	}
 
 	async function uploadProfilePicture() {
-		errorMessage = null
-		fileUploadLoading = true
+		errorMessage = null;
+		fileUploadLoading = true;
 
-		if (!files || files.length == 0) return
+		if (!files || files.length == 0) return;
 		if (files[0].size > 10000000) {
-			errorMessage = 'Maximum file size allowed is 10mb'
-			return
+			errorMessage = 'Maximum file size allowed is 10mb';
+			return;
 		}
 
-		let fd = new FormData()
-		fd.append('file', files[0])
+		let fd = new FormData();
+		fd.append('file', files[0]);
 
 		const res = await fetch('/api/v1/upload', {
 			method: 'POST',
@@ -67,20 +67,20 @@
 				Authorization: `Bearer ${data.token}`
 			},
 			body: fd
-		})
+		});
 
-		fileUploadLoading = false
+		fileUploadLoading = false;
 
 		if (!res.ok) {
 			try {
-				let data = await res.json()
-				if (data.message) errorMessage = data.message
+				let data = await res.json();
+				if (data.message) errorMessage = data.message;
 			} catch (error) {
-				errorMessage = 'Something went really wrong here!'
+				errorMessage = 'Something went really wrong here!';
 			}
 		} else {
-			let data = await res.json()
-			profilePicture = data.data
+			let data = await res.json();
+			profilePicture = data.data;
 		}
 	}
 </script>

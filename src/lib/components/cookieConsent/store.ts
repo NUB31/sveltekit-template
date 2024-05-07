@@ -1,34 +1,30 @@
-import { writable } from 'svelte/store'
-import { browser } from '$app/environment'
-import type { Consent } from '$lib/types'
+import { writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import type { Consent } from '$lib/types';
+import { localStorageKeys } from '$lib/global/localStorageKeys';
 
-function createCookieConsentEditor() {
-	const storedJson = browser ? localStorage.getItem('cookie_consent') || null : null
-	let storedConsent
-
-	try {
-		storedConsent = storedJson ? JSON.parse(storedJson) : null
-	} catch {
-		if (browser) localStorage.removeItem('cookie_consent')
-	}
-
-	const consent = storedConsent || {
+function createCookieConsentStore() {
+	let consent: Consent = {
 		functional: true,
-		tracking: false,
-		advertising: false,
-		marketing: false,
-		displayModal: true
+		dismissed: false
+	};
+
+	if (browser) {
+		const stored = localStorage.getItem(localStorageKeys.cookieConsent);
+		if (stored) {
+			consent = JSON.parse(stored) as Consent;
+		}
 	}
 
-	const { subscribe, update } = writable(consent)
+	const { subscribe, update } = writable(consent);
 
 	return {
 		subscribe,
 		set: (value: Consent) => {
-			update(() => value)
-			localStorage.setItem('cookie_consent', JSON.stringify(value))
+			update(() => value);
+			localStorage.setItem(localStorageKeys.cookieConsent, JSON.stringify(value));
 		}
-	}
+	};
 }
 
-export const cookieConsent = createCookieConsentEditor()
+export const cookieConsent = createCookieConsentStore();
