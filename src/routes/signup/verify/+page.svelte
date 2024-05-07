@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import Button from '$lib/components/button/Button.svelte';
 	import type { ErrorOrT } from '$lib/types/ErrorOrT.js';
 	import { userStore } from '$lib/store/userStore';
 	import { Routes } from '$lib/global/routes';
+	import { authStateChanged, sendVerification } from '$lib/util/auth';
+	import type { User } from '@prisma/client';
 
 	let code = '';
 
@@ -11,24 +13,12 @@
 	let loading = false;
 	let buttonDisabled = true;
 
-	async function sendCode() {
+	async function invokeSendVerificationCode() {
 		buttonDisabled = true;
 		try {
-			const res = await fetch(Routes.api.sendVerification);
-
-			if (!res.ok) {
-				try {
-					let data = await res.json();
-					if (data.message) throw new Error(data.message);
-					else throw new Error('Your verification email failed to send');
-				} catch (error) {
-					throw error;
-				}
-			}
-		} catch (error: unknown) {
-			let message = 'Something went really wrong here!';
-			if (error instanceof Error) message = error.message;
-			errorMessage = message;
+			await sendVerification();
+		} catch (e) {
+			errorMessage = e instanceof Error ? e.message : 'Something went really wrong here!';
 		} finally {
 			buttonDisabled = false;
 		}
@@ -49,22 +39,15 @@
 				})
 			});
 
-			if (!res.ok) {
-				let data = (await res.json()) as ErrorOrT<boolean>;
-				try {
-					if (data.error) throw new Error(data.error);
-					else throw new Error('Could not verify your code');
-				} catch (error) {
-					throw error;
-				}
+			let data = (await res.json()) as ErrorOrT<User>;
+			if (data.error) {
+				throw new Error(data.error);
 			}
 
-			await invalidateAll();
+			await authStateChanged(data.data);
 			await goto(Routes.home);
-		} catch (error: unknown) {
-			let message = 'Something went really wrong here!';
-			if (error instanceof Error) message = error.message;
-			errorMessage = message;
+		} catch (e) {
+			errorMessage = e instanceof Error ? e.message : 'Something went really wrong here!';
 		} finally {
 			loading = false;
 		}
@@ -98,7 +81,7 @@
 	</div>
 	<div class="button-wrapper">
 		<Button
-			on:click={sendCode}
+			on:click={invokeSendVerificationCode}
 			disabled={loading}
 			--width="100%"
 			style="secondary"

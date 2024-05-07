@@ -18,8 +18,7 @@ export async function login(username: string, password: string) {
 
 	const data = (await res.json()) as ErrorOrT<User>;
 	if (data.data) {
-		await authStateChanged();
-		userStore.set(data.data);
+		await authStateChanged(data.data);
 		if (data.data.isVerified === false) {
 			await goto(Routes.verify);
 		} else {
@@ -63,9 +62,12 @@ export async function signup(
 		throw new Error(data.error);
 	}
 
-	await sendVerification();
-	await authStateChanged();
-	await goto(Routes.verify);
+	try {
+		await sendVerification();
+	} finally {
+		await authStateChanged(data.data);
+		await goto(Routes.verify);
+	}
 }
 
 export async function sendVerification() {
@@ -77,7 +79,7 @@ export async function sendVerification() {
 	}
 }
 
-async function authStateChanged() {
-	userStore.set(null);
+export async function authStateChanged(newState: User | null = null) {
+	userStore.set(newState);
 	await invalidateAll();
 }

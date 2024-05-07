@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request, cookies }): Promise<Respon
 		}
 
 		try {
-			await db.user.update({
+			const newUser = await db.user.update({
 				data: {
 					isVerified: true
 				},
@@ -51,16 +51,16 @@ export const POST: RequestHandler = async ({ request, cookies }): Promise<Respon
 					username: user.username
 				}
 			});
+
+			cookies.set('jwt', await generateJwt(user.id), {
+				path: Routes.root
+			});
+
+			return response({
+				data: newUser,
+				error: null
+			});
 		} catch (error) {
 			return errorResponse('There was an error updating the database');
 		}
-
-		cookies.set('jwt', await generateJwt(user.id), {
-			path: Routes.root
-		});
-
-		return response({
-			data: true,
-			error: null
-		});
 	});
