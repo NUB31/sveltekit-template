@@ -13,6 +13,9 @@
 	<h2>This site uses cookies</h2>
 	<p class="description">
 		This site uses cookies for required functionality such as authorization, theming, language
+		etc.
+		<br />
+		We do not conduct any form for tracking through cookies or fingerprinting.
 	</p>
 	<div class="button-group">
 		<Button
