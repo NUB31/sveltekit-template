@@ -26,7 +26,8 @@
 {#if $userStore}
 	<slot name="authorized" {user} />
 {:else if showUnauthorizedMessage}
-	<div>Unauthorized</div>
+	<h1>Unauthorized</h1>
+	<p>You must be logged in to see this content</p>
 {:else}
 	<slot name="unauthorized" />
 {/if}

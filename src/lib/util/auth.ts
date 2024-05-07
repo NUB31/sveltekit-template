@@ -1,4 +1,5 @@
 import { goto, invalidateAll } from '$app/navigation';
+import { toast } from '$lib/components/toast/toast';
 import { Routes } from '$lib/global/routes';
 import { userStore } from '$lib/store/userStore';
 import type { ErrorOrT } from '$lib/types/ErrorOrT';
@@ -25,16 +26,21 @@ export async function login(username: string, password: string) {
 			await goto(Routes.home);
 		}
 	} else {
+		toast.error(data.error);
 		throw new Error(data.error);
 	}
 }
 
 export async function logout() {
 	const res = await fetch(Routes.api.logout);
+	const data = (await res.json()) as ErrorOrT<boolean>;
 
-	if (res.ok) {
+	if (data.data) {
 		await authStateChanged();
 		await goto(Routes.login);
+	} else {
+		toast.error(data.error);
+		throw new Error(data.error ?? 'An error occurred logging you out');
 	}
 }
 
@@ -59,11 +65,16 @@ export async function signup(
 
 	const data = (await createUserRes.json()) as ErrorOrT<User>;
 	if (data.error) {
+		toast.error(data.error);
 		throw new Error(data.error);
 	}
 
 	try {
 		await sendVerification();
+	} catch {
+		toast.warning(
+			'Account created successfully, however the verification code was not able to be sent'
+		);
 	} finally {
 		await authStateChanged(data.data);
 		await goto(Routes.verify);
@@ -75,6 +86,7 @@ export async function sendVerification() {
 
 	const data = (await res.json()) as ErrorOrT<boolean>;
 	if (data.error) {
+		toast.error(data.error);
 		throw new Error(data.error);
 	}
 }

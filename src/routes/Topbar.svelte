@@ -1,6 +1,7 @@
 <script lang="ts">
 	import AuthorizedView from '$lib/components/authorizedView/AuthorizedView.svelte';
 	import Button from '$lib/components/button/Button.svelte';
+	import { Routes } from '$lib/global/routes';
 	import { logout } from '$lib/util/auth';
 
 	let accountDialogOpen = false;
@@ -37,7 +38,7 @@
 			<dialog open={accountDialogOpen}>
 				<ul class="user-links">
 					<li>
-						<a href="/account">
+						<a href={Routes.account}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="24"
@@ -55,7 +56,7 @@
 				</ul>
 
 				<div class="user-actions">
-					<a href="/account/settings">
+					<a href={Routes.settings}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="24"
@@ -86,7 +87,7 @@
 		</div>
 		<div slot="unauthorized">
 			<div class="button-group">
-				<a href="/signup">
+				<a href={Routes.signup}>
 					<Button
 						style="custom"
 						--background-color-hover="hsl(0, 0%, 18%)"
@@ -94,7 +95,7 @@
 						>Sign up
 					</Button>
 				</a>
-				<a href="/login"><Button style="primary">Log in</Button></a>
+				<a href={Routes.login}><Button style="primary">Log in</Button></a>
 			</div>
 		</div>
 	</AuthorizedView>

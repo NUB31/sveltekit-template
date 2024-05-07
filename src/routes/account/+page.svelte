@@ -1,5 +1,29 @@
 <script lang="ts">
-	import { userStore } from '$lib/store/userStore';
+	import AuthorizedView from '$lib/components/authorizedView/AuthorizedView.svelte';
 </script>
 
-<h1>{$userStore?.username}</h1>
+<AuthorizedView redirectToLogin>
+	<div slot="authorized" let:user>
+		<h1>{user.username}</h1>
+		<ul>
+			<li>
+				Id: {user.id}
+			</li>
+			<li>
+				Email: {user.email}
+			</li>
+			<li>
+				Phone number: {user.phone}
+			</li>
+			<li>
+				Verified: {user.isVerified}
+			</li>
+			<li>
+				Created at: {user.createdAt}
+			</li>
+			<li>
+				Updated at: {user.updatedAt}
+			</li>
+		</ul>
+	</div>
+</AuthorizedView>

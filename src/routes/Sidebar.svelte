@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { Routes } from '$lib/global/routes';
 
 	let sidebarOpen = browser ? document.body.clientWidth > 850 : false;
 </script>
@@ -9,12 +10,12 @@
 	style={`${!sidebarOpen ? '--sidebar-width: 4rem' : ''}`}
 >
 	<header>
-		<a href="/"><img src="https://placehold.co/250x125" alt="logo" /></a>
+		<a href={Routes.home}><img src="https://placehold.co/250x125" alt="logo" /></a>
 	</header>
 	<nav class="links-section">
-		<ul role="list" class="links">
+		<ul class="links">
 			<li class="link">
-				<a href="/">
+				<a href={Routes.home}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="28"
@@ -27,7 +28,7 @@
 				</a>
 			</li>
 			<li class="link">
-				<a href="/about">
+				<a href={Routes.about}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="28"
