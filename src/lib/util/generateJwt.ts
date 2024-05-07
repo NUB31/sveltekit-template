@@ -17,5 +17,5 @@ export async function generateJwt(userId: string) {
 	}
 
 	user.password = '';
-	return jwt.sign({ user: user }, SECRET_JWT_SECRET, { expiresIn: '30d' });
+	return jwt.sign({ user: { ...user, password: '' } }, SECRET_JWT_SECRET, { expiresIn: '30d' });
 }

@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-import type { Consent } from '$lib/types';
+import type { Consent } from '$lib/types/Consent';
 import { localStorageKeys } from '$lib/global/localStorageKeys';
 
 function createCookieConsentStore() {

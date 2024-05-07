@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '../button/button.svelte';
-	import Modal from '../modal/modal.svelte';
+	import Button from '../button/Button.svelte';
+	import Modal from '../modal/Modal.svelte';
 	import { cookieConsent } from './store';
 </script>
 

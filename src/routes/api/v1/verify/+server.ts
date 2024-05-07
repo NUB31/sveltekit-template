@@ -1,58 +1,44 @@
-import type { ApiResponse } from '$lib/types';
-import { db, authorize, generateJwt } from '$lib/util';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { authorize } from '$lib/util/authorize';
+import { db } from '$lib/util/database';
+import { generateJwt } from '$lib/util/generateJwt';
+import { errorResponse, response } from '$lib/util/response';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ request, cookies }) => {
-	const res: ApiResponse = {
-		data: null,
-		message: null,
-		success: false
-	};
-
-	return authorize(request, async (err, user) => {
-		if (err) {
-			res.message = err;
-			return json(res, { status: 403 });
-		}
-
+export const POST: RequestHandler = async ({ request, cookies }): Promise<Response> =>
+	authorize(cookies, async (user) => {
 		if (!request.body) {
-			res.message = 'Request does not have a body';
-			return json(res, { status: 422 });
+			return errorResponse('Request does not have a body', 422);
 		}
 
 		let body;
 		try {
 			body = await request.json();
 		} catch (error) {
-			res.message = 'Could not parse JSON';
-			return json(res, { status: 400 });
+			return errorResponse('Could not parse JSON');
 		}
 
 		if (!body.code) {
-			res.message = 'Body must contain a verification code';
-			return json(res, { status: 422 });
+			return errorResponse('Body must contain a verification code', 422);
 		}
 
 		if (isNaN(Number(body.code))) {
-			res.message = 'Code must be of type: number';
-			return json(res, { status: 422 });
+			return errorResponse('Code must be of type: number', 422);
 		}
 
-		try {
-			await db.verificationCode.findFirstOrThrow({
-				where: {
-					AND: {
-						code: Number(body.code),
-						userId: user.id,
-						createdAt: {
-							gt: new Date(Date.now() - 10000 * 60) // 10 Minutes
-						}
+		const code = await db.verificationCode.findFirst({
+			where: {
+				AND: {
+					code: Number(body.code),
+					userId: user.id,
+					createdAt: {
+						gt: new Date(Date.now() - 10000 * 60) // 10 Minutes
 					}
 				}
-			});
-		} catch (error) {
-			res.message = 'Code is invalid or expired';
-			return json(res, { status: 422 });
+			}
+		});
+
+		if (!code) {
+			return errorResponse('Code is invalid or expired', 403);
 		}
 
 		try {
@@ -65,15 +51,15 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				}
 			});
 		} catch (error) {
-			res.message = 'There was an error updating the database';
-			return json(res, { status: 500 });
+			return errorResponse('There was an error updating the database');
 		}
 
 		cookies.set('jwt', await generateJwt(user.id), {
 			path: '/'
 		});
 
-		res.success = true;
-		return json(res, { status: 200 });
+		return response({
+			data: true,
+			error: null
+		});
 	});
-};

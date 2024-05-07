@@ -1,24 +1,12 @@
-import type { ApiResponse } from '$lib/types';
-import { authorize } from '$lib/util';
-import { json, type RequestHandler } from '@sveltejs/kit';
 import path from 'path';
 import fs from 'fs/promises';
+import type { RequestHandler } from '@sveltejs/kit';
+import { authorize } from '$lib/util/authorize';
+import { response } from '$lib/util/response';
 
-export const POST: RequestHandler = async ({ request }) => {
-	const res: ApiResponse = {
-		data: null,
-		message: null,
-		success: false
-	};
-
-	return authorize(request, async (err) => {
-		if (err) {
-			res.message = err;
-			return json(res, { status: 403 });
-		}
-
+export const POST: RequestHandler = async ({ request, cookies }) =>
+	authorize(cookies, async () => {
 		const data = Object.fromEntries(await request.formData());
-
 		const relativeFilePath = path.join(
 			'upload',
 			`${crypto.randomUUID()}.${(data.file as File).type.split('/')[1]}`
@@ -35,8 +23,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			Buffer.from(await (data.file as Blob).arrayBuffer())
 		);
 
-		res.data = `/${relativeFilePath}`;
-		res.success = true;
-		return json(res, { status: 200 });
+		return response({
+			data: `/${relativeFilePath}`,
+			error: null
+		});
 	});
-};

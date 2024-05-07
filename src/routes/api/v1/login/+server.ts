@@ -1,31 +1,23 @@
-import type { ApiResponse } from '$lib/types';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/util/database';
+import { generateJwt } from '$lib/util/generateJwt';
+import { errorResponse, response } from '$lib/util/response';
+import type { RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
-import { generateJwt, db } from '$lib/util';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	const res: ApiResponse = {
-		data: null,
-		message: null,
-		success: false
-	};
-
 	if (!request.body) {
-		res.message = 'Request does not have a body';
-		return json(res, { status: 422 });
+		return errorResponse('Request does not have a body', 422);
 	}
 
 	let body;
 	try {
 		body = await request.json();
 	} catch (error) {
-		res.message = 'Could not parse JSON';
-		return json(res, { status: 400 });
+		return errorResponse('Could not parse JSON');
 	}
 
 	if (!body.username || !body.password) {
-		res.message = 'Body must contain a username and a password';
-		return json(res, { status: 422 });
+		return errorResponse('Body must contain a username and a password', 422);
 	}
 
 	const user = await db.user.findUnique({
@@ -35,21 +27,21 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	});
 
 	if (!user) {
-		res.message = `User with username: '${body.username}' does not exist`;
-		return json(res, { status: 404 });
+		return errorResponse(`User with username: '${body.username}' does not exist`, 404);
 	}
 
 	const match = await bcrypt.compare(body.password, user.password);
 
 	if (!match) {
-		res.message = 'Password is wrong';
-		return json(res, { status: 401 });
+		return errorResponse('Password is wrong', 401);
 	}
 
 	cookies.set('jwt', await generateJwt(user.id), {
 		path: '/'
 	});
 
-	res.success = true;
-	return json(res);
+	return response({
+		data: { ...user, password: '' },
+		error: null
+	});
 };

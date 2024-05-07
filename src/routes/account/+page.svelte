@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let data;
+	import { userStore } from '$lib/store/userStore';
 </script>
 
-<h1>{data.user?.username}</h1>
+<h1>{$userStore?.username}</h1>

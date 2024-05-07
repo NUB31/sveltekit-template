@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
-	import Button from '$lib/components/button/button.svelte';
-
-	export let data;
+	import Button from '$lib/components/button/Button.svelte';
 
 	let username = '';
 	let password = '';
@@ -44,11 +42,7 @@
 
 			await invalidateAll();
 
-			const sendVerificationRes = await fetch('/api/v1/sendVerification', {
-				headers: {
-					Authorization: `Bearer ${data.token}`
-				}
-			});
+			const sendVerificationRes = await fetch('/api/v1/sendVerification');
 
 			if (!sendVerificationRes.ok) {
 				try {

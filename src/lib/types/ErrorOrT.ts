@@ -1,1 +1,1 @@
-export type ErrorOrT<T> = { error: Error; user: null } | { error: null; user: T };
+export type ErrorOrT<T> = { error: string; data: null } | { error: null; data: T };

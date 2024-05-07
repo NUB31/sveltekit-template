@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
-	import Button from '$lib/components/button/button.svelte';
-
-	export let data;
+	import Button from '$lib/components/button/Button.svelte';
+	import { login } from '$lib/util/auth';
 
 	let username = '';
 	let password = '';
@@ -10,41 +8,23 @@
 	let errorMessage: string | null = null;
 	let loading = false;
 
-	async function login() {
+	async function invokeLogin() {
 		if (username.trim().length == 0 && password.trim().length == 0) return;
 
 		loading = true;
-		const res = await fetch('/api/v1/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username: username,
-				password: password
-			})
-		});
-
-		loading = false;
-
-		if (!res.ok) {
-			try {
-				let data = await res.json();
-				if (data.message) errorMessage = data.message;
-			} catch (error) {
-				errorMessage = 'Something went really wrong here!';
-			}
-		} else {
-			await invalidateAll();
-			if (data?.user?.isVerified === false) goto('/signup/verify');
-			else await goto('/');
+		try {
+			await login(username, password);
+		} catch (e) {
+			errorMessage = e instanceof Error ? e.message : 'An error occurred';
+		} finally {
+			loading = false;
 		}
 	}
 
 	$: loading && (errorMessage = null);
 </script>
 
-<form class="centered" on:submit|preventDefault={login}>
+<form class="centered" on:submit|preventDefault={invokeLogin}>
 	<caption>Log in</caption>
 	<hr />
 	{#if errorMessage}

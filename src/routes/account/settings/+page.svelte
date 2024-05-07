@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import Button from '$lib/components/button/button.svelte';
+	import Button from '$lib/components/button/Button.svelte';
+	import { userStore } from '$lib/store/userStore';
 
-	export let data;
-
-	let username = data.user?.username || '';
+	let username = $userStore?.username || '';
 	let password = '';
-	let profilePicture = data.user?.profilePicture || '';
-	let phone = data.user?.phone || '';
+	let profilePicture = $userStore?.profilePicture || '';
+	let phone = $userStore?.phone || '';
 
 	let files: FileList;
 
@@ -22,15 +21,14 @@
 		const res = await fetch('/api/v1/user/me', {
 			method: 'PATCH',
 			headers: {
-				'Content-Type': 'application/json',
-				Authorization: `Bearer ${data.token}`
+				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				username: username.trim() !== data.user?.username ? username : null,
+				username: username.trim() !== $userStore?.username ? username : null,
 				password: password.trim().length >= 1 ? password : null,
 				profilePicture:
-					profilePicture.trim() !== data.user?.profilePicture ? profilePicture : null,
-				phone: phone.trim() !== data.user?.phone ? phone : null
+					profilePicture.trim() !== $userStore?.profilePicture ? profilePicture : null,
+				phone: phone.trim() !== $userStore?.phone ? phone : null
 			})
 		});
 
@@ -63,9 +61,6 @@
 
 		const res = await fetch('/api/v1/upload', {
 			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${data.token}`
-			},
 			body: fd
 		});
 

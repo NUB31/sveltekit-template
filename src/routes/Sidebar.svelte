@@ -43,7 +43,7 @@
 				</a>
 			</li>
 			<li class="link">
-				<a target="_blank" href="https://github.com/nub31/sveltekit_template">
+				<a target="_blank" href="https://github.com/nub31/sveltekit-template">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="28"

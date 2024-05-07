@@ -1,43 +1,36 @@
-import { db, generateJwt } from '$lib/util';
-import type { ApiResponse } from '$lib/types';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/util/database';
 import bcrypt from 'bcrypt';
+import { generateJwt } from '$lib/util/generateJwt';
+import { errorResponse, response } from '$lib/util/response';
+import type { RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	const res: ApiResponse = {
-		data: null,
-		message: null,
-		success: false
-	};
-
 	if (!request.body) {
-		res.message = 'Request does not have a body';
-		return json(res, { status: 422 });
+		return errorResponse('Request does not have a body', 422);
 	}
 
 	let body;
 	try {
 		body = await request.json();
 	} catch (error) {
-		res.message = 'Could not parse JSON';
-		return json(res, { status: 400 });
+		return errorResponse('Could not parse JSON');
 	}
 
 	if (!body.username || !body.password || !body.email) {
-		res.message =
-			'Body must contain a username, password and email address. You can also optionally include a phone number and a profile picture';
-		return json(res, { status: 422 });
+		return errorResponse(
+			'Body must contain a username, password and email address. You can also optionally include a phone number and a profile picture',
+			422
+		);
 	}
 
-	if (
-		await db.user.findUnique({
-			where: {
-				username: body.username
-			}
-		})
-	) {
-		res.message = 'Username is taken';
-		return json(res, { status: 409 });
+	const existingUser = await db.user.findUnique({
+		where: {
+			username: body.username
+		}
+	});
+
+	if (existingUser) {
+		return errorResponse('Username is taken', 400);
 	}
 
 	const user = await db.user.create({
@@ -54,6 +47,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		path: '/'
 	});
 
-	res.success = true;
-	return json(res, { status: 201 });
+	return response({
+		data: { ...user, password: '' },
+		error: null
+	});
 };

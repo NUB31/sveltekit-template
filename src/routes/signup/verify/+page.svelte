@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
-	import Button from '$lib/components/button/button.svelte';
-
-	export let data;
+	import Button from '$lib/components/button/Button.svelte';
+	import type { ErrorOrT } from '$lib/types/ErrorOrT.js';
+	import { userStore } from '$lib/store/userStore';
 
 	let code = '';
 
@@ -13,11 +13,7 @@
 	async function sendCode() {
 		buttonDisabled = true;
 		try {
-			const res = await fetch('/api/v1/sendVerification', {
-				headers: {
-					Authorization: `Bearer ${data.token}`
-				}
-			});
+			const res = await fetch('/api/v1/sendVerification');
 
 			if (!res.ok) {
 				try {
@@ -45,8 +41,7 @@
 			const res = await fetch('/api/v1/verify', {
 				method: 'POST',
 				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${data.token}`
+					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
 					code: code
@@ -54,9 +49,9 @@
 			});
 
 			if (!res.ok) {
+				let data = (await res.json()) as ErrorOrT<boolean>;
 				try {
-					let data = await res.json();
-					if (data.message) throw new Error(data.message);
+					if (data.error) throw new Error(data.error);
 					else throw new Error('Could not verify your code');
 				} catch (error) {
 					throw error;
@@ -81,7 +76,7 @@
 	<caption>Verify email address</caption>
 	<hr />
 	<p>
-		We have sent a code to '{data.user?.email}'. Please enter the code below
+		We have sent a verification code to '{$userStore?.email}'.
 	</p>
 	{#if errorMessage}
 		<div class="error-message">

@@ -1,20 +1,10 @@
-import type { ApiResponse } from '$lib/types';
-import { authorize, sendVerificationEmail } from '$lib/util';
-import { json, type RequestHandler } from '@sveltejs/kit';
+import { authorize } from '$lib/util/authorize';
+import { errorResponse, response } from '$lib/util/response';
+import { sendVerificationEmail } from '$lib/util/sendVerificationEmail';
+import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ request }) => {
-	const res: ApiResponse = {
-		data: null,
-		message: null,
-		success: false
-	};
-
-	return authorize(request, async (err, user) => {
-		if (err) {
-			res.message = err;
-			return json(res, { status: 403 });
-		}
-
+export const GET: RequestHandler = async ({ cookies }) =>
+	authorize(cookies, async (user) => {
 		try {
 			const log = await sendVerificationEmail(user.id);
 			console.log(log);
@@ -22,11 +12,11 @@ export const GET: RequestHandler = async ({ request }) => {
 			let message = 'There was an error sending your verification code';
 			if (error instanceof Error) message = error.message;
 
-			res.message = message;
-			return json(res, { status: 500 });
+			return errorResponse(message);
 		}
 
-		res.success = true;
-		return json(res, { status: 200 });
+		return response({
+			data: true,
+			error: null
+		});
 	});
-};
