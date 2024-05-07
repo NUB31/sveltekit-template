@@ -4,6 +4,7 @@
 	import Topbar from './Topbar.svelte';
 	import Sidebar from './Sidebar.svelte';
 	import CookieConsent from '$lib/components/cookieConsent/CookieConsent.svelte';
+	import ToastProvider from '$lib/components/toast/ToastProvider.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { userStore } from '$lib/store/userStore';
@@ -26,6 +27,7 @@
 </div>
 
 <CookieConsent />
+<ToastProvider />
 
 <style>
 	/* Wrapper */
