@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import type { Consent } from '$lib/types/Consent';
-import { localStorageKeys } from '$lib/global/localStorageKeys';
+import { LocalStorageKeys } from '$lib/global/localStorageKeys';
 
 function createCookieConsentStore() {
 	let consent: Consent = {
@@ -10,7 +10,7 @@ function createCookieConsentStore() {
 	};
 
 	if (browser) {
-		const stored = localStorage.getItem(localStorageKeys.cookieConsent);
+		const stored = localStorage.getItem(LocalStorageKeys.cookieConsent);
 		if (stored) {
 			consent = JSON.parse(stored) as Consent;
 		}
@@ -22,7 +22,7 @@ function createCookieConsentStore() {
 		subscribe,
 		set: (value: Consent) => {
 			update(() => value);
-			localStorage.setItem(localStorageKeys.cookieConsent, JSON.stringify(value));
+			localStorage.setItem(LocalStorageKeys.cookieConsent, JSON.stringify(value));
 		}
 	};
 }

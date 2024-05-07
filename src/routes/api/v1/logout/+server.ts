@@ -1,9 +1,10 @@
-import { response } from '$lib/util/response';
+import { Routes } from '$lib/global/routes';
+import { response } from '$lib/server/response';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ cookies }) => {
 	cookies.set('jwt', '', {
-		path: '/'
+		path: Routes.root
 	});
 
 	return response({

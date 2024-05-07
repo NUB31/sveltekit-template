@@ -7,10 +7,11 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { userStore } from '$lib/store/userStore';
+	import { Routes } from '$lib/global/routes';
 
 	onMount(async () => {
 		if ($userStore && $userStore.isVerified == false) {
-			await goto('/signup/verify');
+			await goto(Routes.verify);
 		}
 	});
 </script>

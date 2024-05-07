@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { Routes } from '$lib/global/routes';
 	import { userStore } from '$lib/store/userStore';
 	import type { User } from '@prisma/client';
 	import { onMount } from 'svelte';
@@ -17,7 +18,7 @@
 
 	onMount(() => {
 		if ($userStore == null && redirectToLogin) {
-			goto('/login');
+			goto(Routes.login);
 		}
 	});
 </script>

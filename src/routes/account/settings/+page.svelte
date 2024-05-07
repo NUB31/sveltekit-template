@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import Button from '$lib/components/button/Button.svelte';
+	import { Routes } from '$lib/global/routes';
 	import { userStore } from '$lib/store/userStore';
 
 	let username = $userStore?.username || '';
@@ -18,7 +19,7 @@
 		errorMessage = null;
 		userUpdateLoading = true;
 
-		const res = await fetch('/api/v1/user/me', {
+		const res = await fetch(Routes.api.myAccount, {
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json'
@@ -59,7 +60,7 @@
 		let fd = new FormData();
 		fd.append('file', files[0]);
 
-		const res = await fetch('/api/v1/upload', {
+		const res = await fetch(Routes.api.upload, {
 			method: 'POST',
 			body: fd
 		});

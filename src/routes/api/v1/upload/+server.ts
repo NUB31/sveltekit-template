@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs/promises';
 import type { RequestHandler } from '@sveltejs/kit';
-import { authorize } from '$lib/util/authorize';
-import { response } from '$lib/util/response';
+import { authorize } from '$lib/server/authorize';
+import { response } from '$lib/server/response';
 
 export const POST: RequestHandler = async ({ request, cookies }) =>
 	authorize(cookies, async () => {

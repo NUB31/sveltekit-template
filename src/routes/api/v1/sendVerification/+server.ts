@@ -1,6 +1,6 @@
-import { authorize } from '$lib/util/authorize';
-import { errorResponse, response } from '$lib/util/response';
-import { sendVerificationEmail } from '$lib/util/sendVerificationEmail';
+import { authorize } from '$lib/server/authorize';
+import { errorResponse, response } from '$lib/server/response';
+import { sendVerificationEmail } from '$lib/server/sendVerificationEmail';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ cookies }) =>

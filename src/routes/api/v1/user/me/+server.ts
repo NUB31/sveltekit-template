@@ -1,7 +1,8 @@
-import { authorize } from '$lib/util/authorize';
-import { db } from '$lib/util/database';
-import { generateJwt } from '$lib/util/generateJwt';
-import { errorResponse, response } from '$lib/util/response';
+import { Routes } from '$lib/global/routes';
+import { authorize } from '$lib/server/authorize';
+import { db } from '$lib/server/database';
+import { generateJwt } from '$lib/server/generateJwt';
+import { errorResponse, response } from '$lib/server/response';
 import type { RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
 
@@ -45,7 +46,7 @@ export const PATCH: RequestHandler = async ({ request, cookies }) =>
 		});
 
 		cookies.set('jwt', await generateJwt(updatedUser.id), {
-			path: '/'
+			path: Routes.root
 		});
 
 		return response({

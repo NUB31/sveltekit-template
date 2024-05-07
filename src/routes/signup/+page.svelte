@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
 	import Button from '$lib/components/button/Button.svelte';
+	import { signup } from '$lib/util/auth';
 
 	let username = '';
 	let password = '';
@@ -10,65 +10,21 @@
 	let errorMessage: string | null = null;
 	let loading = false;
 
-	async function signup() {
+	async function invokeSignup() {
 		loading = true;
 		errorMessage = null;
 
 		try {
-			const createUserRes = await fetch('/api/v1/signup', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					username: username,
-					password: password,
-					email: email,
-					phone: phone.trim().length >= 1 ? phone : null
-				})
-			});
-
-			if (!createUserRes.ok) {
-				try {
-					let data = await createUserRes.json();
-					if (data.message) throw new Error(data.message);
-					else {
-						throw new Error('Could not create your account');
-					}
-				} catch (error) {
-					throw error;
-				}
-			}
-
-			await invalidateAll();
-
-			const sendVerificationRes = await fetch('/api/v1/sendVerification');
-
-			if (!sendVerificationRes.ok) {
-				try {
-					let data = await sendVerificationRes.json();
-					if (data.message) throw new Error(data.message);
-					else
-						throw new Error(
-							'Your account has been created, but your verification email failed to send'
-						);
-				} catch (error) {
-					throw error;
-				}
-			}
-
-			await goto('/signup/verify');
-		} catch (error: unknown) {
-			let message = 'Something went really wrong here!';
-			if (error instanceof Error) message = error.message;
-			errorMessage = message;
+			await signup(username, password, email, phone.length >= 1 ? phone : null);
+		} catch (e) {
+			errorMessage = e instanceof Error ? e.message : 'Something went really wrong here!';
 		} finally {
 			loading = false;
 		}
 	}
 </script>
 
-<form class="centered" on:submit|preventDefault={signup}>
+<form class="centered" on:submit|preventDefault={invokeSignup}>
 	<caption>Sign up</caption>
 	<hr />
 	{#if errorMessage}

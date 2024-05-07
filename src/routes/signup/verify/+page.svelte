@@ -3,6 +3,7 @@
 	import Button from '$lib/components/button/Button.svelte';
 	import type { ErrorOrT } from '$lib/types/ErrorOrT.js';
 	import { userStore } from '$lib/store/userStore';
+	import { Routes } from '$lib/global/routes';
 
 	let code = '';
 
@@ -13,7 +14,7 @@
 	async function sendCode() {
 		buttonDisabled = true;
 		try {
-			const res = await fetch('/api/v1/sendVerification');
+			const res = await fetch(Routes.api.sendVerification);
 
 			if (!res.ok) {
 				try {
@@ -38,7 +39,7 @@
 		errorMessage = null;
 
 		try {
-			const res = await fetch('/api/v1/verify', {
+			const res = await fetch(Routes.api.verify, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -59,7 +60,7 @@
 			}
 
 			await invalidateAll();
-			await goto('/');
+			await goto(Routes.home);
 		} catch (error: unknown) {
 			let message = 'Something went really wrong here!';
 			if (error instanceof Error) message = error.message;

@@ -1,10 +1,11 @@
-import { goto, invalidate } from '$app/navigation';
+import { goto, invalidateAll } from '$app/navigation';
+import { Routes } from '$lib/global/routes';
 import { userStore } from '$lib/store/userStore';
 import type { ErrorOrT } from '$lib/types/ErrorOrT';
 import type { User } from '@prisma/client';
 
 export async function login(username: string, password: string) {
-	const res = await fetch('/api/v1/login', {
+	const res = await fetch(Routes.api.login, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
@@ -17,12 +18,12 @@ export async function login(username: string, password: string) {
 
 	const data = (await res.json()) as ErrorOrT<User>;
 	if (data.data) {
+		await authStateChanged();
 		userStore.set(data.data);
-		await invalidate('/api/v1/user/me');
 		if (data.data.isVerified === false) {
-			await goto('/signup/verify');
+			await goto(Routes.verify);
 		} else {
-			await goto('/');
+			await goto(Routes.home);
 		}
 	} else {
 		throw new Error(data.error);
@@ -30,20 +31,53 @@ export async function login(username: string, password: string) {
 }
 
 export async function logout() {
-	const res = await fetch('/api/v1/logout');
+	const res = await fetch(Routes.api.logout);
 
 	if (res.ok) {
-		await goto('/login');
+		await authStateChanged();
+		await goto(Routes.login);
 	}
 }
 
-export async function me(): Promise<User> {
-	const res = await fetch('/api/v1/user/me');
-	const data = (await res.json()) as ErrorOrT<User>;
+export async function signup(
+	username: string,
+	password: string,
+	email: string,
+	phone: string | null
+) {
+	const createUserRes = await fetch(Routes.api.signup, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			username: username,
+			password: password,
+			email: email,
+			phone: phone
+		})
+	});
 
-	if (data.data) {
-		return data.data;
-	} else {
+	const data = (await createUserRes.json()) as ErrorOrT<User>;
+	if (data.error) {
 		throw new Error(data.error);
 	}
+
+	await sendVerification();
+	await authStateChanged();
+	await goto(Routes.verify);
+}
+
+export async function sendVerification() {
+	const res = await fetch(Routes.api.sendVerification);
+
+	const data = (await res.json()) as ErrorOrT<boolean>;
+	if (data.error) {
+		throw new Error(data.error);
+	}
+}
+
+async function authStateChanged() {
+	userStore.set(null);
+	await invalidateAll();
 }
