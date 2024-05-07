@@ -12,8 +12,7 @@
 >
 	<h2>This site uses cookies</h2>
 	<p class="description">
-		This site uses some purely functional cookies for functionality such as dark/light theme,
-		language and saving your cookie consent choice.
+		This site uses cookies for required functionality such as authorization, theming, language
 	</p>
 	<div class="button-group">
 		<Button

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
+
 	export let open: boolean;
 
 	let modalEl: HTMLDialogElement;
@@ -7,7 +9,7 @@
 	$: !open && modalEl?.close();
 </script>
 
-<dialog on:cancel bind:this={modalEl}>
+<dialog transition:fade on:cancel bind:this={modalEl}>
 	<slot />
 </dialog>
 
