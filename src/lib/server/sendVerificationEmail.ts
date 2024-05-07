@@ -1,20 +1,17 @@
 import { db } from './database';
-import type { User } from '@prisma/client';
 import { sendMail } from './mail';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export async function sendVerificationEmail(
 	userId: string
 ): Promise<SMTPTransport.SentMessageInfo> {
-	let user: User;
+	const user = await db.user.findUnique({
+		where: {
+			id: userId
+		}
+	});
 
-	try {
-		user = await db.user.findUniqueOrThrow({
-			where: {
-				id: userId
-			}
-		});
-	} catch (error) {
+	if (!user) {
 		throw new Error(`Could not fund user with id: ${userId}`);
 	}
 

@@ -1,9 +1,9 @@
 import type { ErrorOrT } from '$lib/types/ErrorOrT';
 import { json } from '@sveltejs/kit';
 
-export function response<T>(data: ErrorOrT<T>, statusCode = 500): Response {
+export function response<T>(data: ErrorOrT<T>, errorCode = 500): Response {
 	return json(data, {
-		status: data.data != null ? 200 : statusCode
+		status: data.data != null ? 200 : errorCode
 	});
 }
 
