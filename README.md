@@ -18,15 +18,15 @@
 | ![Product Name Screen Shot][dark-contracted-screenshot] | ![Product Name Screen Shot][light-contracted-screenshot] |
 
 </div>
-<h1 align="center">sveltekit_template</h1>
+<h1 align="center">sveltekit-template</h1>
 
   <p align="center">
     A basic sveltekit template
     <br />
     <br />
-    <a href="https://github.com/NUB31/sveltekit_template/issues">Report Bug</a>
+    <a href="https://github.com/NUB31/sveltekit-template/issues">Report Bug</a>
     ·
-    <a href="https://github.com/NUB31/sveltekit_template/issues">Request Feature</a>
+    <a href="https://github.com/NUB31/sveltekit-template/issues">Request Feature</a>
   </p>
 </div>
 
@@ -92,7 +92,7 @@ This is an example of how to list things you need to use the software and how to
 1. Clone the repo
 
     ```bash
-     git clone https://github.com/NUB31/sveltekit_template.git
+     git clone https://github.com/NUB31/sveltekit-template.git
     ```
 
 2. Rename .env.example to .env and fill in values
@@ -171,7 +171,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Your Name - [@nub1357](https://twitter.com/nub1357) - oliverlhs@outlook.com
 
-Project Link: [https://github.com/NUB31/sveltekit_template](https://github.com/NUB31/sveltekit_template)
+Project Link: [https://github.com/NUB31/sveltekit-template](https://github.com/NUB31/sveltekit-template)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -186,16 +186,16 @@ Project Link: [https://github.com/NUB31/sveltekit_template](https://github.com/N
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-[contributors-shield]: https://img.shields.io/github/contributors/NUB31/sveltekit_template.svg?style=for-the-badge
-[contributors-url]: https://github.com/NUB31/sveltekit_template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/NUB31/sveltekit_template.svg?style=for-the-badge
-[forks-url]: https://github.com/NUB31/sveltekit_template/network/members
-[stars-shield]: https://img.shields.io/github/stars/NUB31/sveltekit_template.svg?style=for-the-badge
-[stars-url]: https://github.com/NUB31/sveltekit_template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/NUB31/sveltekit_template.svg?style=for-the-badge
-[issues-url]: https://github.com/NUB31/sveltekit_template/issues
-[license-shield]: https://img.shields.io/github/license/NUB31/sveltekit_template.svg?style=for-the-badge
-[license-url]: https://github.com/NUB31/sveltekit_template/blob/main/LICENCE
+[contributors-shield]: https://img.shields.io/github/contributors/NUB31/sveltekit-template.svg?style=for-the-badge
+[contributors-url]: https://github.com/NUB31/sveltekit-template/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/NUB31/sveltekit-template.svg?style=for-the-badge
+[forks-url]: https://github.com/NUB31/sveltekit-template/network/members
+[stars-shield]: https://img.shields.io/github/stars/NUB31/sveltekit-template.svg?style=for-the-badge
+[stars-url]: https://github.com/NUB31/sveltekit-template/stargazers
+[issues-shield]: https://img.shields.io/github/issues/NUB31/sveltekit-template.svg?style=for-the-badge
+[issues-url]: https://github.com/NUB31/sveltekit-template/issues
+[license-shield]: https://img.shields.io/github/license/NUB31/sveltekit-template.svg?style=for-the-badge
+[license-url]: https://github.com/NUB31/sveltekit-template/blob/main/LICENCE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/oliver-stene-744a96200
 [dark-contracted-screenshot]: /assets/dark-contracted.png
