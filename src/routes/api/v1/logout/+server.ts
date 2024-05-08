@@ -3,9 +3,7 @@ import { response } from '$lib/server/response';
 import type { RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ cookies }) => {
-	cookies.set('jwt', '', {
-		path: Routes.root
-	});
+	cookies.delete('jwt', { path: Routes.root });
 
 	return response({
 		data: true,

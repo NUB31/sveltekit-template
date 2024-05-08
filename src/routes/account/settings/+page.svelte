@@ -1,130 +1,82 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import AuthorizedView from '$lib/components/authorizedView/AuthorizedView.svelte';
 	import Button from '$lib/components/button/Button.svelte';
-	import { toast } from '$lib/components/toast/toast';
-	import { Routes } from '$lib/global/routes';
 	import { userStore } from '$lib/store/userStore';
-	import type { ErrorOrT } from '$lib/types/ErrorOrT';
-	import { authStateChanged } from '$lib/util/auth';
-	import type { User } from '@prisma/client';
+	import { toast } from '$lib/components/toast/toast';
+	import type { ActionData } from './$types';
 
-	let username = $userStore?.username || '';
-	let password = '';
-	let profilePicture = $userStore?.profilePicture || '';
-	let phone = $userStore?.phone || '';
+	export let form: ActionData;
 
 	let files: FileList;
+	let username = $userStore?.username ?? '';
+	let phone = $userStore?.phone ?? '';
 
-	let errorMessage: string | null = null;
-	let userUpdateLoading = false;
-	let fileUploadLoading = false;
-
-	async function updateAccountSettings() {
-		errorMessage = null;
-		userUpdateLoading = true;
-
-		const res = await fetch(Routes.api.myAccount, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username: username.trim() !== $userStore?.username ? username : null,
-				password: password.trim().length >= 1 ? password : null,
-				profilePicture:
-					profilePicture.trim() !== $userStore?.profilePicture ? profilePicture : null,
-				phone: phone.trim() !== $userStore?.phone ? phone : null
-			})
-		});
-
-		userUpdateLoading = false;
-
-		const data = (await res.json()) as ErrorOrT<User>;
-		if (data.data) {
-			authStateChanged(data.data);
-			toast.success('Successfully updated profile');
-		} else {
-			errorMessage = data.error;
-			toast.error(data.error);
-		}
-	}
-
-	async function uploadProfilePicture() {
-		errorMessage = null;
-		fileUploadLoading = true;
-
-		if (!files || files.length == 0) return;
-		if (files[0].size > 10000000) {
-			errorMessage = 'Maximum file size allowed is 10mb';
-			return;
-		}
-
-		let fd = new FormData();
-		fd.append('file', files[0]);
-
-		const res = await fetch(Routes.api.upload, {
-			method: 'POST',
-			body: fd
-		});
-
-		fileUploadLoading = false;
-
-		const data = (await res.json()) as ErrorOrT<string>;
-		if (data.data) {
-			profilePicture = data.data;
-			toast.info('Image uploaded successfully');
-		} else {
-			toast.error(data.error);
+	$: {
+		if (form?.success) {
+			toast.success();
+		} else if (form?.fileMissing) {
+			toast.error('No file provided');
+		} else if (form?.jwtTokenNotPresent) {
+			toast.error('An error occurred, please log in again');
+		} else if (form?.emailMissing) {
+			toast.error('Email cannot be empty');
+		} else if (form?.jwtInvalid) {
+			toast.error('Token is invalid, please log in again');
+		} else if (form?.passwordMissing) {
+			toast.error('Password cannot be empty');
+		} else if (form?.phoneMissing) {
+			toast.error('Phone number cannot be empty');
+		} else if (form?.usernameMissing) {
+			toast.error('Username cannot be empty');
 		}
 	}
 </script>
 
 <AuthorizedView redirectToLogin>
-	<form slot="authorized" class="centered" on:submit|preventDefault={updateAccountSettings}>
+	<form slot="authorized" class="centered" let:user>
 		<caption>Account Settings</caption>
 		<hr />
-		{#if errorMessage}
-			<div class="error-message" style="margin-top: var(--spacing-12);">
-				{errorMessage}
-			</div>
-		{/if}
-		<div class="form-group">
+		<form action="?/updateUsername" method="POST" use:enhance class="form-group">
 			<label for="username">Username: </label>
-			<input type="text" id="username" bind:value={username} />
-		</div>
-		<div class="form-group">
-			<label for="password">Password: </label>
-			<input type="password" id="password" bind:value={password} />
-		</div>
-		<div class="form-group">
-			<label for="phone">Phone number: </label>
-			<input type="text" id="phone" bind:value={phone} />
-		</div>
-		<div class="form-group">
-			<label for="profile-picture">Profile picture: </label>
-			<div class="file-group">
-				<input bind:files type="file" accept="image/*" />
-				<Button
-					loading={fileUploadLoading}
-					disabled={!files}
-					on:click={uploadProfilePicture}
-					type="button"
-				>
-					Upload
-				</Button>
+			<div class="form-row">
+				<input bind:value={username} type="text" name="username" id="username" />
+				<Button disabled={username == user.username} style="primary">Save</Button>
 			</div>
-			<input disabled type="text" id="profile-picture" bind:value={profilePicture} />
-		</div>
-		<Button loading={userUpdateLoading} style="primary" --margin-top="var(--spacing-16)">
-			Save
-		</Button>
+		</form>
+		<form action="?/updatePassword" method="POST" use:enhance class="form-group">
+			<label for="password">Password: </label>
+			<div class="form-row">
+				<input type="password" name="password" id="password" />
+				<Button style="primary">Save</Button>
+			</div>
+		</form>
+		<form action="?/updatePhone" method="POST" use:enhance class="form-group">
+			<label for="phone">Phone number: </label>
+			<div class="form-row">
+				<input bind:value={phone} type="text" name="phone" id="phone" />
+				<Button disabled={phone == user.phone} style="primary">Save</Button>
+			</div>
+		</form>
+		<form
+			action="?/updateProfilePicture"
+			enctype="multipart/form-data"
+			method="POST"
+			use:enhance
+			class="form-group"
+		>
+			<label for="file">Profile picture: </label>
+			<div class="form-row">
+				<input
+					bind:files
+					id="file"
+					multiple={false}
+					name="file"
+					type="file"
+					accept="image/*"
+				/>
+				<Button style="primary" disabled={!files}>Save</Button>
+			</div>
+		</form>
 	</form>
 </AuthorizedView>
-
-<style>
-	.file-group {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
-</style>

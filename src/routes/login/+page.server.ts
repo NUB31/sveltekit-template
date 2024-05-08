@@ -33,7 +33,7 @@ export const actions = {
 			return fail(401, { passwordIncorrect: true });
 		}
 
-		cookies.set('jwt', await generateJwt(user.id), { path: '/' });
+		cookies.set('jwt', await generateJwt(user), { path: Routes.root });
 
 		if (user.isVerified) {
 			throw redirect(303, Routes.home);

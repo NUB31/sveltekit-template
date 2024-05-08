@@ -11,7 +11,7 @@ export const actions = {
 			return fail(401, { jwtTokenNotPresent: true });
 		}
 
-		const user = parseJwt(token);
+		const user = parseJwt(token).user;
 		try {
 			await sendVerificationEmail(user.id);
 		} catch {
@@ -27,7 +27,7 @@ export const actions = {
 			return fail(401, { jwtTokenNotPresent: true });
 		}
 
-		const user = parseJwt(token);
+		const user = parseJwt(token).user;
 
 		if (!code) {
 			return fail(422, { codeMissing: true });
@@ -54,7 +54,7 @@ export const actions = {
 		}
 
 		try {
-			await db.user.update({
+			const newUser = await db.user.update({
 				data: {
 					isVerified: true
 				},
@@ -63,7 +63,7 @@ export const actions = {
 				}
 			});
 
-			cookies.set('jwt', await generateJwt(user.id), {
+			cookies.set('jwt', await generateJwt(newUser), {
 				path: Routes.root
 			});
 

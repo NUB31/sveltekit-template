@@ -190,10 +190,25 @@ form > .form-group:first-of-type {
 	margin-top: var(--spacing-16);
 }
 
-form > .form-group > input[type='text'],
-form > .form-group > input[type='email'],
-form > .form-group > input[type='tel'],
-form > .form-group > input[type='password'] {
+form > .form-group > .form-row {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: space-between;
+}
+
+form > .form-group > .form-row > input {
+	flex-grow: 1;
+}
+
+form > .form-group > .form-row > button {
+	flex-shrink: 0;
+}
+
+form > .form-group input[type='text'],
+form > .form-group input[type='email'],
+form > .form-group input[type='tel'],
+form > .form-group input[type='password'] {
 	padding: var(--spacing-4) var(--spacing-8);
 	border-radius: var(--rounded-8);
 	background-color: var(--clr-secondary-button);

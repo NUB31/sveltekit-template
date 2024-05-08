@@ -2,7 +2,7 @@ class ApiRoutes {
 	v1Base = '/api/v1';
 	logout = `${this.v1Base}/logout`;
 	upload = `${this.v1Base}/upload`;
-	myAccount = `${this.v1Base}/user/me`;
+	account = `${this.v1Base}/account`;
 }
 
 export class Routes {

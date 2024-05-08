@@ -49,7 +49,7 @@ export const actions = {
 				}
 			});
 
-			cookies.set('jwt', await generateJwt(user.id), { path: '/' });
+			cookies.set('jwt', await generateJwt(user), { path: Routes.root });
 
 			try {
 				await sendVerificationEmail(user.id);
