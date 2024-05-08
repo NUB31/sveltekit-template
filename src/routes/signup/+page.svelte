@@ -1,73 +1,51 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import Button from '$lib/components/button/Button.svelte';
-	import { signup } from '$lib/util/auth';
+	import { toast } from '$lib/components/toast/toast';
+	import { Routes } from '$lib/global/routes';
+	import type { ActionData } from './$types';
 
-	let username = '';
-	let password = '';
-	let email = '';
-	let phone = '';
+	export let form: ActionData;
 
-	let errorMessage: string | null = null;
-	let loading = false;
-
-	async function invokeSignup() {
-		loading = true;
-		errorMessage = null;
-
-		try {
-			await signup(username, password, email, phone.length >= 1 ? phone : null);
-		} catch (e) {
-			errorMessage = e instanceof Error ? e.message : 'Something went really wrong here!';
-		} finally {
-			loading = false;
+	$: {
+		if (form?.dbError) {
+			toast.error();
+		} else if (form?.emailEmpty) {
+			toast.error('Email cannot be empty');
+		} else if (form?.passwordEmpty) {
+			toast.error('Password cannot be empty');
+		} else if (form?.usernameEmpty) {
+			toast.error('Username cannot be empty');
+		} else if (form?.usernameTaken) {
+			toast.error('Username is already taken');
+		} else if (form?.verificationEmailFailedToSend) {
+			toast.warning(
+				'Your account was created, however your verification email failed to send'
+			);
+			goto(Routes.home);
 		}
 	}
 </script>
 
-<form class="centered" on:submit|preventDefault={invokeSignup}>
+<form class="centered" method="POST" use:enhance>
 	<caption>Sign up</caption>
 	<hr />
-	{#if errorMessage}
-		<div class="error-message" style="margin-top: var(--spacing-12);">
-			{errorMessage}
-		</div>
-	{/if}
 	<div class="form-group">
 		<label class="required" for="username">Username</label>
-		<input
-			bind:value={username}
-			type="text"
-			placeholder="Username"
-			name="username"
-			id="username"
-			required
-		/>
+		<input type="text" placeholder="Username" name="username" id="username" required />
 	</div>
 	<div class="form-group">
 		<label class="required" for="password">Password</label>
-		<input
-			bind:value={password}
-			type="password"
-			placeholder="Password"
-			name="password"
-			id="password"
-			required
-		/>
+		<input type="password" placeholder="Password" name="password" id="password" required />
 	</div>
 	<div class="form-group">
 		<label class="required" for="email">Email</label>
-		<input
-			bind:value={email}
-			type="email"
-			placeholder="Email"
-			name="email"
-			id="email"
-			required
-		/>
+		<input type="email" placeholder="Email" name="email" id="email" required />
 	</div>
 	<div class="form-group">
 		<label for="phone">Phone number</label>
-		<input bind:value={phone} type="tel" placeholder="Phone number" name="phone" id="phone" />
+		<input type="tel" placeholder="Phone number" name="phone" id="phone" />
 	</div>
-	<Button {loading} --margin-top="var(--spacing-16)" style="primary">Next</Button>
+	<Button --margin-top="var(--spacing-16)" style="primary">Next</Button>
 </form>

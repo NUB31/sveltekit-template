@@ -1,79 +1,46 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import Button from '$lib/components/button/Button.svelte';
-	import type { ErrorOrT } from '$lib/types/ErrorOrT.js';
-	import { Routes } from '$lib/global/routes';
-	import { authStateChanged, sendVerification } from '$lib/util/auth';
-	import type { User } from '@prisma/client';
 	import AuthorizedView from '$lib/components/authorizedView/AuthorizedView.svelte';
+	import { toast } from '$lib/components/toast/toast';
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+
+	export let form: ActionData;
 
 	let code = '';
 
-	let errorMessage: string | null = null;
-	let loading = false;
-	let buttonDisabled = true;
-
-	async function invokeSendVerificationCode() {
-		buttonDisabled = true;
-		try {
-			await sendVerification();
-		} catch (e) {
-			errorMessage = e instanceof Error ? e.message : 'Something went really wrong here!';
-		} finally {
-			buttonDisabled = false;
-		}
-	}
-
-	async function verify() {
-		loading = true;
-		errorMessage = null;
-
-		try {
-			const res = await fetch(Routes.api.verify, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					code: code
-				})
-			});
-
-			let data = (await res.json()) as ErrorOrT<User>;
-			if (data.error) {
-				throw new Error(data.error);
-			}
-
-			await authStateChanged(data.data);
-			await goto(Routes.home);
-		} catch (e) {
-			errorMessage = e instanceof Error ? e.message : 'Something went really wrong here!';
-		} finally {
-			loading = false;
-		}
-	}
-
 	$: buttonDisabled = !(code.length === 6);
+
+	$: {
+		if (form?.dbError) {
+			toast.error();
+		} else if (form?.codeMissing) {
+			toast.error('Code cannot be empty');
+		} else if (form?.codeNotANumber) {
+			toast.error('Code must be a number');
+		} else if (form?.jwtTokenNotPresent) {
+			toast.error('You do not appear to be logged in');
+		} else if (form?.missingOrExpired) {
+			toast.error('Code is invalid or expired');
+		} else if (form?.verificationEmailFailedToSend) {
+			toast.error('Unable to send verification code');
+		}
+	}
 </script>
 
 <AuthorizedView showUnauthorizedMessage>
-	<form slot="authorized" class="login-form" on:submit|preventDefault={verify} let:user>
+	<form slot="authorized" action="?/verify" class="login-form" method="POST" use:enhance let:user>
 		<caption>Verify email address</caption>
 		<hr />
 		<p>
 			We have sent a verification code to '{user.email}'.
 		</p>
-		{#if errorMessage}
-			<div class="error-message">
-				{errorMessage}
-			</div>
-		{/if}
 		<div class="form-group">
 			<label for="phone">Verification code</label>
 			<input
-				bind:value={code}
 				maxlength="6"
 				type="text"
+				bind:value={code}
 				placeholder="xxxxxx"
 				name="code"
 				id="code"
@@ -81,18 +48,10 @@
 			/>
 		</div>
 		<div class="button-wrapper">
-			<Button
-				on:click={invokeSendVerificationCode}
-				disabled={loading}
-				--width="100%"
-				style="secondary"
-				type="button"
-			>
-				Send new code
-			</Button>
-			<Button disabled={buttonDisabled} {loading} --width="100%" style="primary"
-				>Verify</Button
-			>
+			<form method="POST" action="?/sendCode" use:enhance>
+				<Button --width="100%" style="secondary">Send new code</Button>
+			</form>
+			<Button disabled={buttonDisabled} --width="100%" style="primary">Verify</Button>
 		</div>
 	</form>
 </AuthorizedView>
@@ -124,13 +83,6 @@
 		background-color: var(--clr-accent);
 		border: none;
 		border-radius: var(--rounded-full);
-	}
-
-	.error-message {
-		background-color: var(--clr-accent);
-		padding: var(--spacing-4);
-		border-radius: var(--rounded-4);
-		margin-top: var(--spacing-12);
 	}
 
 	.form-group {

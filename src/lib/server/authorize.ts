@@ -1,12 +1,7 @@
 import type { User } from '@prisma/client';
-import jwt, { type JwtPayload } from 'jsonwebtoken';
-import { SECRET_JWT_SECRET } from '$env/static/private';
 import { errorResponse } from './response';
 import type { Cookies } from '@sveltejs/kit';
-
-export interface UserIDJwtPayload extends JwtPayload {
-	user: User;
-}
+import { parseJwt } from './jwtUtils';
 
 export function authorize(
 	cookies: Cookies,
@@ -19,7 +14,7 @@ export function authorize(
 
 	try {
 		try {
-			const value = <UserIDJwtPayload>jwt.verify(cookie, SECRET_JWT_SECRET);
+			const value = parseJwt(cookie);
 			return next(value.user);
 		} catch (error) {
 			throw new Error('Verification failed. Please log in again');

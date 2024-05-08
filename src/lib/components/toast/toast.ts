@@ -36,11 +36,11 @@ function dismiss(id: string) {
 
 export const toast = {
 	clear: () => toasts.set([]),
-	error: (text: string | null, dismissible = true) =>
-		addToast(text ?? 'En feil oppstod', 'error', dismissible),
+	error: (text: string | null = null, dismissible = true) =>
+		addToast(text ?? 'An error occurred', 'error', dismissible),
 	info: (text: string, dismissible = true) => addToast(text, 'info', dismissible),
 	warning: (text: string, dismissible = true) => addToast(text, 'warning', dismissible),
 	success: (text: string | null, dismissible = true) =>
-		addToast(text ?? 'Suksess', 'success', dismissible),
+		addToast(text ?? 'Success', 'success', dismissible),
 	dismiss: dismiss
 };

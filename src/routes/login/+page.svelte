@@ -1,58 +1,34 @@
 <script lang="ts">
 	import Button from '$lib/components/button/Button.svelte';
-	import { login } from '$lib/util/auth';
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+	import { toast } from '$lib/components/toast/toast';
 
-	let username = '';
-	let password = '';
+	export let form: ActionData;
 
-	let errorMessage: string | null = null;
-	let loading = false;
-
-	async function invokeLogin() {
-		if (username.trim().length == 0 && password.trim().length == 0) return;
-
-		loading = true;
-		try {
-			await login(username, password);
-		} catch (e) {
-			errorMessage = e instanceof Error ? e.message : 'An error occurred';
-		} finally {
-			loading = false;
+	$: {
+		if (form?.passwordEmpty) {
+			toast.error('Password cannot be empty');
+		} else if (form?.passwordIncorrect) {
+			toast.error('Password is incorrect');
+		} else if (form?.userNotFound) {
+			toast.error('User was not found');
+		} else if (form?.usernameEmpty) {
+			toast.error('Username cannot be empty');
 		}
 	}
-
-	$: loading && (errorMessage = null);
 </script>
 
-<form class="centered" on:submit|preventDefault={invokeLogin}>
+<form method="POST" class="centered" use:enhance>
 	<caption>Log in</caption>
 	<hr />
-	{#if errorMessage}
-		<div class="error-message" style="margin-top: var(--spacing-12);">
-			{errorMessage}
-		</div>
-	{/if}
 	<div class="form-group">
 		<label class="required" for="username">Username</label>
-		<input
-			bind:value={username}
-			type="text"
-			placeholder="Username"
-			name="username"
-			id="username"
-			required
-		/>
+		<input type="text" placeholder="Username" name="username" id="username" required />
 	</div>
 	<div class="form-group">
 		<label class="required" for="password">Password</label>
-		<input
-			bind:value={password}
-			type="password"
-			placeholder="Password"
-			name="password"
-			id="password"
-			required
-		/>
+		<input type="password" placeholder="Password" name="password" id="password" required />
 	</div>
-	<Button {loading} --margin-top="var(--spacing-16)" style="primary">Log in</Button>
+	<Button --margin-top="var(--spacing-16)" style="primary">Log in</Button>
 </form>

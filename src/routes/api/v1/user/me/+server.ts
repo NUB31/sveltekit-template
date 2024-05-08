@@ -1,7 +1,7 @@
 import { Routes } from '$lib/global/routes';
 import { authorize } from '$lib/server/authorize';
 import { db } from '$lib/server/database';
-import { generateJwt } from '$lib/server/generateJwt';
+import { generateJwt } from '$lib/server/jwtUtils';
 import { errorResponse, response } from '$lib/server/response';
 import type { RequestHandler } from '@sveltejs/kit';
 import bcrypt from 'bcrypt';
